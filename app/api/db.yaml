@@ -1,0 +1,5 @@
+host: 'db'
+user: 'postgres'
+password: 'postgres'
+db: 'homepresencedb'
+port: '5432'

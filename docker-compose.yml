@@ -19,9 +19,10 @@ services:
      - 8080
 
   nginx:
+    container_name: home_presence_nginx
     build: ./nginx
     restart: always
     depends_on:
      - app
-   ports:
-     - 8001
+    ports:
+     - 8001:8001
