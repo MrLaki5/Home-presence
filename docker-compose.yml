@@ -1,0 +1,27 @@
+version: '3.6'
+
+services:
+  db:
+    container_name: home_presence_db
+    build: ./postgres
+    restart: always
+    expose:
+     - 5432
+    
+  app:
+    container_name: home_presence_back
+    build: ./app
+    depends_on:
+     - db
+    stdin_open: true
+    tty: true
+    expose:
+     - 8080
+
+  nginx:
+    build: ./nginx
+    restart: always
+    depends_on:
+     - app
+   ports:
+     - 8001

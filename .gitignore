@@ -1,0 +1,9 @@
+# OSX
+.DS_Store
+
+# Basics
+*.py[cod]
+__pycache__
+
+# Pycharm
+.idea/*
