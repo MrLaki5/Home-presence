@@ -6,10 +6,12 @@ import json
 
 app = Flask(__name__)
 dbYaml = yaml.load(open('db.yaml'))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://' + dbYaml['user'] + ':' + dbYaml['password'] + '@' + dbYaml['host'] + ":" + dbYaml['port'] + "/" + dbYaml['db']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://' + dbYaml['user'] + ':' + dbYaml['password'] + '@' +\
+                                        dbYaml['host'] + ":" + dbYaml['port'] + "/" + dbYaml['db']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 model.db.init_app(app)
+
 
 # Ping method
 @app.route('/ping', methods = ['GET'])
