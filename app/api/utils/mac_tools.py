@@ -4,7 +4,7 @@ import subprocess
 
 def get_active_mac_addresses():
     # Use arp to get all mac addresses on local network
-    addresses = subprocess.check_output(["arp", "-a"])
+    addresses = subprocess.check_output(["cat", "/proc/net/arp"])
     # Use regex to extract all mac addresses
     p = re.compile(r'(?:[0-9a-fA-F]{1,}(?:\-|\:)){5}[0-9a-fA-F]{1,}')
     mac_addresses = re.findall(p, str(addresses))

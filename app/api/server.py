@@ -1,8 +1,12 @@
-from flask import Flask, request
+from flask import Flask, request, current_app
 from flask_sqlalchemy import SQLAlchemy
 import yaml
 import model
 import json
+import logging
+from utils.mac_worker import MacWorker
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 dbYaml = yaml.load(open('db.yaml'))
@@ -14,11 +18,22 @@ model.db.init_app(app)
 
 
 # Ping method
-@app.route('/ping', methods = ['GET'])
+@app.route('/ping', methods=['GET'])
 def ping():
+    app.logger.debug("Ping!")
     response = {}
     response["status"] = "success"
     response["message"] = "pong"
+    return json.dumps(response), 200
+
+
+@app.route('/worker_start', methods=['GET'])
+def start_worker():
+    worker = MacWorker(current_app._get_current_object())
+    worker.start()
+    response = {}
+    response["status"] = "success"
+    response["message"] = "worker started"
     return json.dumps(response), 200
 
 
