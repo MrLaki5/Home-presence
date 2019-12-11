@@ -15,8 +15,11 @@ services:
      - db
     stdin_open: true
     tty: true
-    expose:
-     - 8080
+    environment:
+     - NETWORK_MASK=192.168.1.0/24
+    ports:
+     - 8080:8080
+    network_mode: host
 
   nginx:
     container_name: home_presence_nginx
