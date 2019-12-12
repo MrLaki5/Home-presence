@@ -17,6 +17,7 @@ services:
     tty: true
     environment:
      - NETWORK_MASK=192.168.1.0/24
+     - MAX_MISS_COUNTER=5
     ports:
      - 8080:8080
     network_mode: host

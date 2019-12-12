@@ -1,8 +1,10 @@
 import threading
+import os
 from time import sleep
 from flask import current_app
 from utils.mac_tools import get_active_mac_addresses
 
+max_miss_count = int(os.environ['MAX_MISS_COUNTER'])
 
 class MacWorker(threading.Thread):
 
@@ -19,13 +21,14 @@ class MacWorker(threading.Thread):
             active_mac_addresses = get_active_mac_addresses()
             for set_mac in self.active_set:
                 if set_mac["mac"] in active_mac_addresses:
-                    set_mac["count"] += 1
+                    set_mac["miss_count"] = 0
                     active_mac_addresses.remove(set_mac["mac"])
                 else:
-                    set_mac["count"] = 0
+                    set_mac["miss_count"] += 1
             for active_mac in active_mac_addresses:
-                self.active_set.append({"mac": active_mac, "count": 1})
-            self.active_set = sorted(self.active_set, key=lambda x: x["count"], reverse=True)
+                self.active_set.append({"mac": active_mac, "miss_count": 0})
+            self.active_set = filter(lambda x: x["miss_count"] < max_miss_count, self.active_set)
+            self.active_set = sorted(self.active_set, key=lambda x: x["miss_count"], reverse=False)
             with self.app_context:
                 num = 1
                 current_app.logger.debug("======================================================")
@@ -34,6 +37,6 @@ class MacWorker(threading.Thread):
                 for item in self.active_set:
                     current_app.logger.debug("{:0>2d}".format(num) +
                                              ". Mac: " + str(item["mac"]) +
-                                             ", Count: " + str(item["count"])
+                                             ", Miss count: " + str(item["miss_count"])
                                              )
                     num += 1
