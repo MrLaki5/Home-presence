@@ -5,8 +5,9 @@ services:
     container_name: home_presence_db
     build: ./postgres
     restart: always
-    expose:
-     - 5432
+    ports:
+     - 5432:5432
+    network_mode: host
     
   app:
     container_name: home_presence_back
@@ -15,9 +16,13 @@ services:
      - db
     stdin_open: true
     tty: true
+    restart: always
     environment:
      - NETWORK_MASK=192.168.1.0/24
      - MAX_MISS_COUNTER=5
+     - WORKER_DB_INSERT_PASS=1
+     - WORKER_SLEEP_TIME_S=10
+     - TIMEZONE=Europe/Belgrade
     ports:
      - 8080:8080
     network_mode: host
@@ -26,7 +31,6 @@ services:
     container_name: home_presence_nginx
     build: ./nginx
     restart: always
-    depends_on:
-     - app
     ports:
      - 8001:8001
+    network_mode: host

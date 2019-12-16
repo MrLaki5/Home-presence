@@ -8,13 +8,18 @@ from utils.mac_worker import MacWorker
 
 logging.basicConfig(level=logging.DEBUG)
 
-app = Flask(__name__)
-dbYaml = yaml.load(open('db.yaml'))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://' + dbYaml['user'] + ':' + dbYaml['password'] + '@' +\
-                                        dbYaml['host'] + ":" + dbYaml['port'] + "/" + dbYaml['db']
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-model.db.init_app(app)
+def create_app():
+    app_inner = Flask(__name__)
+    db_yaml = yaml.load(open('db.yaml'), Loader=yaml.FullLoader)
+    app_inner.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://' + db_yaml['user'] + ':' + db_yaml['password'] + '@' +\
+                                                  db_yaml['host'] + ":" + db_yaml['port'] + "/" + db_yaml['db']
+    app_inner.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    model.db.init_app(app_inner)
+    return app_inner
+
+
+app = create_app()
 
 
 # Ping method
@@ -39,4 +44,4 @@ def start_worker():
 
 # Create flask app and set it up to listen on specific ip and specific port
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port = 8080)
+    app.run(host='0.0.0.0', port=8080)

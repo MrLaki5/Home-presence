@@ -1,4 +1,4 @@
-host: 'db'
+host: '0.0.0.0'
 user: 'postgres'
 password: 'postgres'
 db: 'homepresencedb'
