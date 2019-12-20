@@ -1,7 +1,7 @@
 from flask import Flask, request, current_app
-from flask_sqlalchemy import SQLAlchemy
 import yaml
 import model
+from model import LogUser, User
 import json
 import logging
 from utils.mac_worker import MacWorker
@@ -43,6 +43,21 @@ def start_worker():
     response["status"] = "success"
     response["message"] = "workers started"
     return json.dumps(response), 200
+
+
+@app.route('/mac_logs', methods=['GET'])
+def get_mac_logs():
+    return_macs = []
+    macs_db = LogUser.query.all()
+    for mac_db in macs_db:
+        curr_mac = User.query.filter_by(uuid=mac_db["user_uuid"]).first()
+        if curr_mac:
+            return_macs.append({"mac": curr_mac["mac_address"], "time": str(mac_db["time"])})
+    return_message = {
+        "status": "success",
+        "mac_logs": return_macs
+    }
+    return json.dumps(return_message), 200
 
 
 # Create flask app and set it up to listen on specific ip and specific port
