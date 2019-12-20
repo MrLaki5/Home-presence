@@ -20,8 +20,8 @@ services:
     environment:
      - NETWORK_MASK=192.168.1.0/24
      - MAX_MISS_COUNTER=5
-     - WORKER_DB_INSERT_PASS=1
-     - WORKER_SLEEP_TIME_S=10
+     - WORKER_MAC_SLEEP_TIME_S=10
+     - WORKER_DB_SLEEP_TIME_S=60
      - TIMEZONE=Europe/Belgrade
     ports:
      - 8080:8080

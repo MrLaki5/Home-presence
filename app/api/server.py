@@ -5,6 +5,7 @@ import model
 import json
 import logging
 from utils.mac_worker import MacWorker
+from utils.db_worker import DBWorker
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -32,13 +33,15 @@ def ping():
     return json.dumps(response), 200
 
 
-@app.route('/worker_start', methods=['GET'])
+@app.route('/workers_start', methods=['GET'])
 def start_worker():
-    worker = MacWorker(current_app._get_current_object())
-    worker.start()
+    worker_mac = MacWorker(current_app._get_current_object())
+    worker_db = DBWorker(current_app._get_current_object(), worker_mac)
+    worker_mac.start()
+    worker_db.start()
     response = {}
     response["status"] = "success"
-    response["message"] = "worker started"
+    response["message"] = "workers started"
     return json.dumps(response), 200
 
 
