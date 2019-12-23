@@ -1,11 +1,14 @@
 from flask import Flask, request, current_app
 import yaml
 import model
-from model import LogUser, User
+import pytz
+import os
+from model import LogUser, User, db
 import json
 import logging
 from utils.mac_worker import MacWorker
 from utils.db_worker import DBWorker
+from sqlalchemy import func, desc
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -48,7 +51,7 @@ def start_worker():
 @app.route('/mac_logs', methods=['GET'])
 def get_mac_logs():
     return_macs = []
-    macs_db = LogUser.query.all()
+    macs_db = LogUser.query.limit(5).all()
     for mac_db in macs_db:
         curr_mac = User.query.filter_by(uuid=mac_db["user_uuid"]).first()
         if curr_mac:
@@ -56,6 +59,27 @@ def get_mac_logs():
     return_message = {
         "status": "success",
         "mac_logs": return_macs
+    }
+    return json.dumps(return_message), 200
+
+
+@app.route('/num_logs', methods=['GET'])
+def get_mac_num():
+    return_nums = []
+    # nums_db = db.session.query(LogUser.time, func.count(LogUser.user_uuid)).group_by(LogUser.time).all()
+
+    distinct_users = (
+        db.session.query(func.date_trunc('hour', LogUser.time).label('h'), LogUser.user_uuid.label('count_inner')).group_by('h', LogUser.user_uuid).subquery()
+    )
+
+    nums_db = db.session.query(distinct_users.c.h, func.count().label('count')).group_by(distinct_users.c.h).order_by(desc(distinct_users.c.h)).all()
+    tz = pytz.timezone(os.environ['TIMEZONE'])
+    for num_db in nums_db:
+        time_curr = pytz.utc.localize(num_db[0], is_dst=None).astimezone(tz)
+        return_nums.append({"count": num_db[1], "time": time_curr.strftime("%m/%d/%Y, %H:%M:%S")})
+    return_message = {
+        "status": "success",
+        "mac_logs": return_nums
     }
     return json.dumps(return_message), 200
 
