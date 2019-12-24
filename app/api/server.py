@@ -5,6 +5,7 @@ import pytz
 import os
 from model import LogUser, User, db
 import json
+import datetime
 import logging
 from utils.mac_worker import MacWorker
 from utils.db_worker import DBWorker
@@ -77,7 +78,6 @@ def get_mac_num():
         time_group = "hour"
 
     return_nums = []
-    # nums_db = db.session.query(LogUser.time, func.count(LogUser.user_uuid)).group_by(LogUser.time).all()
 
     # Get users grouped by time and user id
     distinct_users = (db.session.query(
@@ -99,6 +99,56 @@ def get_mac_num():
         # Convert time to given timezone
         time_curr = pytz.utc.localize(num_db[0], is_dst=None).astimezone(tz)
         return_nums.append({"count": num_db[1], "time": time_curr.strftime("%d/%m/%Y, %H:%M:%S")})
+    return_message = {
+        "status": "success",
+        "mac_logs": return_nums
+    }
+    return jsonify(return_message), 200
+
+
+@app.route('/mac_in_time', methods=['GET'])
+def get_mac_in_time():
+    # Get parameters
+    try:
+        # Convert time from local timezone to UTC (db is in UTC)
+        time = request.args.get('time')
+        time = datetime.datetime.strptime(time, "%d/%m/%Y, %H:%M:%S")
+        tz = pytz.timezone(os.environ['TIMEZONE'])
+        time = tz.localize(time, is_dst=None)
+        time = time.astimezone(pytz.utc)
+        current_app.logger.debug("TIME: " + str(time))
+    except Exception as ex:
+        current_app.logger.debug("ERROR: " + str(ex))
+        time = None
+    if not time:
+        return_message = {
+            "status": "fail",
+            "message": "Bad payload"
+        }
+        return jsonify(return_message), 400
+    time_group = request.args.get('time_group')
+    time_groups = ["hour", "day", "month", "year"]
+    if time_group not in time_groups:
+        time_group = "hour"
+
+    return_nums = []
+
+    # Get users grouped by time and user id
+    distinct_users = (db.session.query(
+            func.date_trunc(time_group, LogUser.time).label('curr_time'), LogUser.user_uuid.label('user_uuid'))
+            .group_by('curr_time', LogUser.user_uuid)
+            .subquery())
+
+    # Filter with given time and show user ids
+    nums_db = (db.session.query(distinct_users.c.user_uuid)
+               .filter(distinct_users.c.curr_time == time)
+               .all())
+
+    # Iterate thorough results and put them into json
+    for num_db in nums_db:
+        # Get mac address for user id
+        curr_mac = User.query.filter_by(uuid=num_db[0]).first()
+        return_nums.append({"mac_address": curr_mac["mac_address"]})
     return_message = {
         "status": "success",
         "mac_logs": return_nums
