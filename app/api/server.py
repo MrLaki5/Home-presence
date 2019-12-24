@@ -1,4 +1,4 @@
-from flask import Flask, request, current_app
+from flask import Flask, request, current_app, jsonify
 import yaml
 import model
 import pytz
@@ -33,7 +33,7 @@ def ping():
     response = {}
     response["status"] = "success"
     response["message"] = "pong"
-    return json.dumps(response), 200
+    return jsonify(response), 200
 
 
 @app.route('/workers_start', methods=['GET'])
@@ -45,7 +45,7 @@ def start_worker():
     response = {}
     response["status"] = "success"
     response["message"] = "workers started"
-    return json.dumps(response), 200
+    return jsonify(response), 200
 
 
 @app.route('/mac_logs', methods=['GET'])
@@ -60,28 +60,50 @@ def get_mac_logs():
         "status": "success",
         "mac_logs": return_macs
     }
-    return json.dumps(return_message), 200
+    return jsonify(return_message), 200
 
 
 @app.route('/num_logs', methods=['GET'])
 def get_mac_num():
+    # Get parameters
+    top_values = request.args.get('top')
+    try:
+        top_values = int(top_values)
+    except Exception as ex:
+        top_values = 10
+    time_group = request.args.get('time_group')
+    time_groups = ["hour", "day", "month", "year"]
+    if time_group not in time_groups:
+        time_group = "hour"
+
     return_nums = []
     # nums_db = db.session.query(LogUser.time, func.count(LogUser.user_uuid)).group_by(LogUser.time).all()
 
-    distinct_users = (
-        db.session.query(func.date_trunc('hour', LogUser.time).label('h'), LogUser.user_uuid.label('count_inner')).group_by('h', LogUser.user_uuid).subquery()
-    )
+    # Get users grouped by time and user id
+    distinct_users = (db.session.query(
+            func.date_trunc(time_group, LogUser.time).label('curr_time'), LogUser.user_uuid.label('count_inner'))
+            .group_by('curr_time', LogUser.user_uuid)
+            .subquery())
 
-    nums_db = db.session.query(distinct_users.c.h, func.count().label('count')).group_by(distinct_users.c.h).order_by(desc(distinct_users.c.h)).all()
+    # Get users grouped by time from user that are grouped by time and id,
+    # this will give count of different users per time
+    nums_db = (db.session.query(distinct_users.c.curr_time, func.count().label('count'))
+               .group_by(distinct_users.c.curr_time)
+               .order_by(desc(distinct_users.c.curr_time))
+               .limit(top_values)
+               .all())
+
+    # Iterate thorough results and put them into json
     tz = pytz.timezone(os.environ['TIMEZONE'])
     for num_db in nums_db:
+        # Convert time to given timezone
         time_curr = pytz.utc.localize(num_db[0], is_dst=None).astimezone(tz)
-        return_nums.append({"count": num_db[1], "time": time_curr.strftime("%m/%d/%Y, %H:%M:%S")})
+        return_nums.append({"count": num_db[1], "time": time_curr.strftime("%d/%m/%Y, %H:%M:%S")})
     return_message = {
         "status": "success",
         "mac_logs": return_nums
     }
-    return json.dumps(return_message), 200
+    return jsonify(return_message), 200
 
 
 # Create flask app and set it up to listen on specific ip and specific port
