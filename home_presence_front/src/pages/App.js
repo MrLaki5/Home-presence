@@ -11,10 +11,12 @@ class App extends React.Component {
         super(props);
         this.state = {
             devices: [],
-            top_val: 10
+            top_val: 10,
+            time: "hour"
         };
         this.getData = this.getData.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
+        this.handleSelectTimeChange = this.handleSelectTimeChange.bind(this)
     }
 
     componentDidMount() {
@@ -34,7 +36,8 @@ class App extends React.Component {
                 devices: data_obj.mac_logs
             }));
         })
-        var params = "?top=" + this.state.top_val
+        var params = "?top=" + this.state.top_val + "&time_group=" + this.state.time
+        console.log(params)
         // open the request with the verb and the url
         xhr.open('GET', 'http://192.168.1.35:8001/num_logs' + params)
         // send the request
@@ -42,8 +45,11 @@ class App extends React.Component {
     }
 
     handleInputChange(event) {
-      this.setState({top_val: event.target.value});
-      this.getData()
+        this.setState({top_val: event.target.value}, () => this.getData());
+    }
+
+    handleSelectTimeChange(event){
+        this.setState({time: event.target.value}, () => this.getData());
     }
 
     render() {
@@ -56,11 +62,14 @@ class App extends React.Component {
                     value={this.state.top_val}
                     onChange={this.handleInputChange}
                 />
-                <select>
-                  <option value="volvo">Volvo</option>
-                  <option value="saab">Saab</option>
-                  <option value="opel">Opel</option>
-                  <option value="audi">Audi</option>
+                <select
+                    value={this.state.time}
+                    onChange={this.handleSelectTimeChange}
+                >
+                  <option value="hour">Hour</option>
+                  <option value="day">Day</option>
+                  <option value="month">Month</option>
+                  <option value="year">Year</option>
                 </select>
                 <Graph devices_num={this.state.devices}/>
             </div>
