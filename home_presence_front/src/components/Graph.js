@@ -1,5 +1,5 @@
 import React from 'react';
-import { VictoryChart, VictoryAxis, VictoryLine, VictoryLegend } from 'victory';
+import { VictoryChart, VictoryAxis, VictoryBar } from 'victory';
 
 class Graph extends React.Component {
 
@@ -12,29 +12,32 @@ class Graph extends React.Component {
             <div>
                 <VictoryChart
                     style={{parent: {backgroundColor: "#FFFFFF"}}}
+                    domainPadding={20}
                 >
-                    <VictoryLine
+                    <VictoryBar
                         style={{ data: { stroke: "#000000" } }}
                         data={devices}
                     />
                     <VictoryAxis
-                        label="Time"
-                        tickFormat={(temp) => ""}
-                        width={180}
+                        label=""
+                        tickFormat={(x) => (String(x).split(" ")[0] + "\n" + String(x).split(" ")[1])}
+                        //width={180}
                         style={{
-                            tickLabels: {fill: 'black', fontSize: 10},
-                            axis: {stroke: "#FFFFFF"},
-                            labels: {fill: 'black', fontSize: 10}
+                            tickLabels: {fill: 'black', fontSize: 7, angle: -40},
+                            axis: {stroke: "#000000"},
+                            labels: {fill: 'black', fontSize: 10},
+                            grid: {stroke: "#000000"}
                         }}
                     />
                     <VictoryAxis
                         dependentAxis
-                        //domain={[0, 100]}
+                        //domain={[0, max_num]}
+                        minDomain={0}
                         //tickValues={[0, 25, 50, 75, 100]}
                         label="Number"
                         style={{
                             tickLabels: {fill: '#000000', fontSize: 8},
-                            axis: {stroke: "#FFFFFF"},
+                            axis: {stroke: "#000000"},
                             axisLabel: {fill: '#000000', fontSize: 9},
                             grid: {stroke: "#000000"}
                         }}
