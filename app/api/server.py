@@ -103,7 +103,9 @@ def get_mac_num():
         "status": "success",
         "mac_logs": return_nums
     }
-    return jsonify(return_message), 200
+    response = jsonify(return_message)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
 
 
 @app.route('/mac_in_time', methods=['GET'])
