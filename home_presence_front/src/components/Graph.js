@@ -6,7 +6,11 @@ class Graph extends React.Component {
     render(){
         var devices = []
         for (var i = (this.props.devices_num.length - 1); i >= 0 ; i--) {
-            devices.push({x: this.props.devices_num[i]["time"], y: this.props.devices_num[i]["count"]})
+            devices.push({
+                x: this.props.devices_num[i]["time"],
+                y: this.props.devices_num[i]["count"],
+                label: ""
+            })
         }
         return (
             <div>
@@ -17,11 +21,26 @@ class Graph extends React.Component {
                     <VictoryBar
                         style={{ data: { stroke: "#000000" } }}
                         data={devices}
+                        events={[
+                            {
+                                target: "data",
+                                eventHandlers: {
+                                    onClick: () => {
+                                        return [{
+                                            target: "labels",
+                                            mutation: (props) => {
+                                                console.log(props.data[props.index].x)
+                                                return props.text
+                                            }
+                                        }];
+                                    }
+                                }
+                            }
+                        ]}
                     />
                     <VictoryAxis
                         label=""
                         tickFormat={(x) => (String(x).split(" ")[0] + "\n" + String(x).split(" ")[1])}
-                        //width={180}
                         style={{
                             tickLabels: {fill: 'black', fontSize: 7, angle: -40},
                             axis: {stroke: "#000000"},
