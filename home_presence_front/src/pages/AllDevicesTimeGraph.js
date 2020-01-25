@@ -1,5 +1,4 @@
 import React from 'react';
-//import { Redirect } from "react-router-dom";
 
 import Graph from '../components/Graph'
 
@@ -39,7 +38,7 @@ class App extends React.Component {
         var params = "?top=" + this.state.top_val + "&time_group=" + this.state.time
         console.log(params)
         // open the request with the verb and the url
-        xhr.open('GET', 'http://192.168.1.35:8001/num_logs' + params)
+        xhr.open('GET', 'http://192.168.1.200:8001/num_logs' + params)
         // send the request
         xhr.send()
     }

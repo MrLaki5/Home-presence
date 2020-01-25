@@ -150,12 +150,47 @@ def get_mac_in_time():
     for num_db in nums_db:
         # Get mac address for user id
         curr_mac = User.query.filter_by(uuid=num_db[0]).first()
-        return_nums.append({"mac_address": curr_mac["mac_address"]})
+        return_nums.append({"mac": curr_mac["mac_address"], "name": curr_mac["name"]})
     return_message = {
         "status": "success",
         "mac_logs": return_nums
     }
-    return jsonify(return_message), 200
+    response = jsonify(return_message)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+
+@app.route('/change_name', methods=['POST'])
+def change_name():
+    new_name = request.form.get("name")
+    mac = request.form.get("mac")
+    if mac and new_name and new_name != "":
+        mac_db = User.query.filter_by(mac_address=mac).first()
+        if mac_db:
+            mac_db.name = new_name
+            db.session.commit()
+            return_message = {
+                "status": "success",
+                "message": "name change done"
+            }
+            response = jsonify(return_message)
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response, 200
+        else:
+            return_message = {
+                "status": "fail",
+                "message": "mac does not exist in db"
+            }
+            response = jsonify(return_message)
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response, 400
+    return_message = {
+        "status": "fail",
+        "message": "wrong payload"
+    }
+    response = jsonify(return_message)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 400
 
 
 # Create flask app and set it up to listen on specific ip and specific port
