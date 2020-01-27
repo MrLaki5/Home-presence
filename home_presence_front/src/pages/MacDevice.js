@@ -11,7 +11,8 @@ class MacDevice extends React.Component {
             name: this.props.location.state.name
         };
         this.goBack = this.goBack.bind(this)
-        this.nameChange = this.nameChange.bind(this)
+        this.handleNameChange = this.handleNameChange.bind(this)
+        this.sendNameChange = this.sendNameChange.bind(this)
     }
 
     goBack() {
@@ -20,11 +21,29 @@ class MacDevice extends React.Component {
         }));
     }
 
-    nameChange(event) {
-        console.log(event)
+    handleNameChange(event) {
+        const value = event.target.value || ""
         this.setState(state => ({
-            name: event.value
+            name: value
         }));
+    }
+
+    sendNameChange(event) {
+        // create a new XMLHttpRequest
+        var xhr = new XMLHttpRequest()
+
+        // get a callback when the server responds
+        xhr.addEventListener('load', () => {
+            // update the state of the component with the result here
+            console.log(xhr.responseText)
+        })
+        var params = "name=" + this.state.name + "&mac=" + this.props.location.state.mac
+        console.log(params)
+        // open the request with the verb and the url
+        xhr.open('POST', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/change_name')
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        // send the request
+        xhr.send(params)
     }
 
     render() {
@@ -47,8 +66,8 @@ class MacDevice extends React.Component {
                         {this.props.location.state.mac}
                     </div>
                     <div>
-                        <input type="text" value={this.state.name} onChange={this.nameChange}/>
-                        <button> Change name </button>
+                        <input type="text" value={this.state.name} onChange={this.handleNameChange} />
+                        <button onClick={this.sendNameChange}> Change name</button>
                     </div>
                     <a onClick={this.goBack}> Back </a>
                 </div>

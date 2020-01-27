@@ -36,7 +36,7 @@ class DevicesInTime extends React.Component {
         var params = "?time=" + this.props.location.state.time
         console.log(params)
         // open the request with the verb and the url
-        xhr.open('GET', 'http://192.168.1.200:8001/mac_in_time' + params)
+        xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/mac_in_time' + params)
         // send the request
         xhr.send()
     }
