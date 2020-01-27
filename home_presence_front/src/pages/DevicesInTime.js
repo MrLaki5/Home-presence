@@ -33,7 +33,7 @@ class DevicesInTime extends React.Component {
                 macs: data_obj.mac_logs
             }));
         })
-        var params = "?time=" + this.props.location.state.time
+        var params = "?time=" + this.props.location.state.time + "&time_group=" + this.props.location.state.time_group
         console.log(params)
         // open the request with the verb and the url
         xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/mac_in_time' + params)
@@ -58,7 +58,7 @@ class DevicesInTime extends React.Component {
             }}/>;
         }
         const mac_addresses = this.state.macs.map((mac, index) =>
-            <MacDeviceLine key={index} mac={mac["mac"]} name={mac["name"]} time={this.props.location.state.time}/>
+            <MacDeviceLine key={index} mac={mac["mac"]} name={mac["name"]} time={this.props.location.state.time} time_group={this.props.location.state.time_group}/>
         );
         return  <div>
                     {mac_addresses}

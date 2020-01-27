@@ -25,7 +25,8 @@ class MacDeviceLine extends React.Component {
                 state: {
                     mac: this.props.mac,
                     time_back: this.props.time,
-                    name: this.props.name
+                    name: this.props.name,
+                    time_group: this.props.time_group
                 }
             }}/>;
         }

@@ -26,16 +26,18 @@ class MacWorker(threading.Thread):
             current_app.logger.debug("MAC worker started!")
         while True:
             sleep(self.sleep_time)
-            active_mac_addresses = get_active_mac_addresses()
+            active_mac_addresses, hosts = get_active_mac_addresses()
             with self.active_set_lock:
                 for set_mac in self.active_set:
                     if set_mac["mac"] in active_mac_addresses:
                         set_mac["miss_count"] = 0
+                        index_mac = active_mac_addresses.index(set_mac["mac"])
+                        hosts.pop(index_mac)
                         active_mac_addresses.remove(set_mac["mac"])
                     else:
                         set_mac["miss_count"] += 1
-                for active_mac in active_mac_addresses:
-                    self.active_set.append({"mac": active_mac, "miss_count": 0})
+                for active_mac, active_host in zip(active_mac_addresses, hosts):
+                    self.active_set.append({"mac": active_mac, "miss_count": 0, "name": active_host})
                 self.active_set = filter(lambda x: x["miss_count"] < self.max_miss_count, self.active_set)
                 self.active_set = sorted(self.active_set, key=lambda x: x["miss_count"], reverse=False)
             with self.app_context:
@@ -46,6 +48,7 @@ class MacWorker(threading.Thread):
                 for item in self.active_set:
                     current_app.logger.debug("{:0>2d}".format(num) +
                                              ". Mac: " + str(item["mac"]) +
+                                             ", Name: " + str(item["name"]) +
                                              ", Miss count: " + str(item["miss_count"])
                                              )
                     num += 1

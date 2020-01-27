@@ -56,7 +56,8 @@ class MacDevice extends React.Component {
                 return <Redirect to={{
                 pathname: "/specific_time",
                 state: {
-                    time: this.props.location.state.time_back
+                    time: this.props.location.state.time_back,
+                    time_group: this.props.location.state.time_group
                 }
             }}/>;
             }

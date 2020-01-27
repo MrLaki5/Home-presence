@@ -70,7 +70,7 @@ class App extends React.Component {
                   <option value="month">Month</option>
                   <option value="year">Year</option>
                 </select>
-                <Graph devices_num={this.state.devices}/>
+                <Graph devices_num={this.state.devices} time_group={this.state.time}/>
             </div>
         );
     }

@@ -17,7 +17,8 @@ class Graph extends React.Component {
             return <Redirect to={{
                 pathname: "/specific_time",
                 state: {
-                    time: this.state.redirect_arg
+                    time: this.state.redirect_arg,
+                    time_group: this.props.time_group
                 }
             }}/>;
         }

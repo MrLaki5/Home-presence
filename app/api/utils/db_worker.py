@@ -25,9 +25,12 @@ class DBWorker(threading.Thread):
                 for item in active_set:
                     user_exists = User.query.filter_by(mac_address=str(item["mac"])).first()
                     if not user_exists:
-                        user_exists = User(mac_address=str(item["mac"]))
+                        user_exists = User(mac_address=str(item["mac"]), name=str(item["name"]))
                         db.session.add(user_exists)
                         db.session.commit()
+                    else:
+                        if user_exists["name"] == "" and item["name"] != "":
+                            user_exists["name"] = item["name"]
                     log_user = LogUser(user_uuid=user_exists.uuid, time=curr_time)
                     db.session.add(log_user)
                     db.session.commit()
