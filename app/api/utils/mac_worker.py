@@ -15,17 +15,22 @@ class MacWorker(threading.Thread):
         self.active_set_lock = threading.Lock()
         self.max_miss_count = int(os.environ['MAX_MISS_COUNTER'])
         self.sleep_time = int(os.environ['WORKER_MAC_SLEEP_TIME_S'])
+        self.wait_event = threading.Event()
 
     def get_active_set(self):
         with self.active_set_lock:
             return_active_set = copy.deepcopy(self.active_set)
         return return_active_set
 
+    def stop_worker(self):
+        self.wait_event.set()
+
     def run(self):
         with self.app_context:
             current_app.logger.debug("MAC worker started!")
         while True:
-            sleep(self.sleep_time)
+            if self.wait_event.wait(self.sleep_time):
+                break
             active_mac_addresses, hosts = get_active_mac_addresses()
             with self.active_set_lock:
                 for set_mac in self.active_set:
@@ -52,3 +57,5 @@ class MacWorker(threading.Thread):
                                              ", Miss count: " + str(item["miss_count"])
                                              )
                     num += 1
+        with self.app_context:
+            current_app.logger.debug("MAC worker stopped!")

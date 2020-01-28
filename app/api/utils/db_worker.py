@@ -1,6 +1,5 @@
 import threading
 import os
-from time import sleep
 from flask import current_app
 from model import User, db, function_now, LogUser
 
@@ -12,12 +11,17 @@ class DBWorker(threading.Thread):
         self.app_context = app.app_context()
         self.mac_worker = mac_worker
         self.sleep_time = int(os.environ['WORKER_DB_SLEEP_TIME_S'])
+        self.wait_event = threading.Event()
+
+    def stop_worker(self):
+        self.wait_event.set()
 
     def run(self):
         with self.app_context:
             current_app.logger.debug("DB worker started!")
         while True:
-            sleep(self.sleep_time)
+            if self.wait_event.wait(self.sleep_time):
+                break
             active_set = self.mac_worker.get_active_set()
             with self.app_context:
                 curr_time = function_now()
@@ -34,3 +38,5 @@ class DBWorker(threading.Thread):
                     log_user = LogUser(user_uuid=user_exists.uuid, time=curr_time)
                     db.session.add(log_user)
                     db.session.commit()
+        with self.app_context:
+            current_app.logger.debug("DB worker stopped!")

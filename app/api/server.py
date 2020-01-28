@@ -4,7 +4,7 @@ import model
 import pytz
 import os
 from model import LogUser, User, db
-import json
+import threading
 import datetime
 import logging
 from utils.mac_worker import MacWorker
@@ -26,6 +26,10 @@ def create_app():
 
 app = create_app()
 
+worker_mac = None
+worker_db = None
+worker_start_flag = threading.Lock()
+
 
 # Ping method
 @app.route('/ping', methods=['GET'])
@@ -38,15 +42,61 @@ def ping():
 
 
 @app.route('/workers_start', methods=['GET'])
-def start_worker():
-    worker_mac = MacWorker(current_app._get_current_object())
-    worker_db = DBWorker(current_app._get_current_object(), worker_mac)
-    worker_mac.start()
-    worker_db.start()
+def start_workers():
+    global worker_mac, worker_db
     response = {}
-    response["status"] = "success"
-    response["message"] = "workers started"
-    return jsonify(response), 200
+    with worker_start_flag:
+        if (not worker_mac) and (not worker_db):
+            worker_mac = MacWorker(current_app._get_current_object())
+            worker_db = DBWorker(current_app._get_current_object(), worker_mac)
+            worker_mac.start()
+            worker_db.start()
+            response["status"] = "success"
+            response["message"] = "workers started"
+        else:
+            response["status"] = "fail"
+            response["message"] = "workers already started"
+    response = jsonify(response)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+
+@app.route('/workers_stop', methods=['GET'])
+def stop_workers():
+    global worker_mac, worker_db
+    response = {}
+    with worker_start_flag:
+        if worker_mac and worker_db:
+            worker_mac.stop_worker()
+            worker_db.stop_worker()
+            worker_mac.join()
+            worker_db.join()
+            worker_mac = None
+            worker_db = None
+            response["status"] = "success"
+            response["message"] = "workers stopped"
+        else:
+            response["status"] = "fail"
+            response["message"] = "workers already stopped"
+    response = jsonify(response)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+
+@app.route('/workers_status', methods=['GET'])
+def status_workers():
+    global worker_mac, worker_db
+    response = {}
+    with worker_start_flag:
+        if worker_mac and worker_db:
+            response["status"] = "success"
+            response["state"] = "running"
+        else:
+            response["status"] = "success"
+            response["state"] = "stopped"
+    response = jsonify(response)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
 
 
 @app.route('/mac_logs', methods=['GET'])
@@ -61,6 +111,8 @@ def get_mac_logs():
         "status": "success",
         "mac_logs": return_macs
     }
+    response = jsonify(return_message)
+    response.headers.add("Access-Control-Allow-Origin", "*")
     return jsonify(return_message), 200
 
 
