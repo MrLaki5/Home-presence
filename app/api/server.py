@@ -212,6 +212,61 @@ def get_mac_in_time():
     return response, 200
 
 
+@app.route('/time_for_mac', methods=['POST'])
+def get_time_for_mac():
+    # Get parameters
+    top_values = request.form.get('top')
+    try:
+        top_values = int(top_values)
+    except Exception as ex:
+        top_values = 10
+    time_group = request.form.get('time_group')
+    time_groups = ["hour", "day", "month", "year"]
+    if time_group not in time_groups:
+        time_group = "hour"
+    mac = request.form.get("mac")
+    if not mac or mac is "":
+        return_message = {
+            "status": "fail",
+            "mac_logs": "bad payload"
+        }
+        response = jsonify(return_message)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response, 400
+
+    return_nums = []
+
+    # Get users grouped by time and user id
+    distinct_users = (db.session.query(
+            func.date_trunc(time_group, LogUser.time).label('curr_time'), LogUser.user_uuid.label('user_uuid'))
+            .group_by('curr_time', LogUser.user_uuid)
+            .subquery())
+
+    # Get users grouped by time from user that are grouped by time and id,
+    # this will give count of different users per time
+    nums_db = (db.session.query(distinct_users.c.curr_time, func.count().label('count'))
+               .group_by(distinct_users.c.curr_time)
+               .order_by(desc(distinct_users.c.curr_time))
+               .filter(distinct_users.c.user_uuid == User.uuid)
+               .filter(User.mac_address == mac)
+               .limit(top_values)
+               .all())
+
+    # Iterate thorough results and put them into json
+    tz = pytz.timezone(os.environ['TIMEZONE'])
+    for num_db in nums_db:
+        # Convert time to given timezone
+        time_curr = pytz.utc.localize(num_db[0], is_dst=None).astimezone(tz)
+        return_nums.append({"count": num_db[1], "time": time_curr.strftime("%d/%m/%Y, %H:%M:%S")})
+    return_message = {
+        "status": "success",
+        "mac_logs": return_nums
+    }
+    response = jsonify(return_message)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+
 @app.route('/change_name', methods=['POST'])
 def change_name():
     new_name = request.form.get("name")
