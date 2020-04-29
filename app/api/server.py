@@ -244,7 +244,7 @@ def get_time_for_mac():
 
     # Get users grouped by time from user that are grouped by time and id,
     # this will give count of different users per time
-    nums_db = (db.session.query(distinct_users.c.curr_time, func.count().label('count'))
+    nums_db = (db.session.query(distinct_users.c.curr_time)
                .group_by(distinct_users.c.curr_time)
                .order_by(desc(distinct_users.c.curr_time))
                .filter(distinct_users.c.user_uuid == User.uuid)
@@ -257,7 +257,7 @@ def get_time_for_mac():
     for num_db in nums_db:
         # Convert time to given timezone
         time_curr = pytz.utc.localize(num_db[0], is_dst=None).astimezone(tz)
-        return_nums.append({"count": num_db[1], "time": time_curr.strftime("%d/%m/%Y, %H:%M:%S")})
+        return_nums.append({"time": time_curr.strftime("%d/%m/%Y, %H:%M:%S")})
     return_message = {
         "status": "success",
         "mac_logs": return_nums
