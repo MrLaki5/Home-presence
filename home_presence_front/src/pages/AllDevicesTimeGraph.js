@@ -3,6 +3,7 @@ import React from 'react';
 import Graph from '../components/Graph'
 import { Redirect } from "react-router-dom";
 
+import Grid from '@material-ui/core/Grid';
 
 
 class App extends React.Component {
@@ -68,6 +69,11 @@ class App extends React.Component {
         }
         return (
             <div>
+                <Grid container spacing={3} style={{width: '100%', paddingLeft: '20%', paddingRight: '20%', backgroundColor: process.env.REACT_APP_COLOR_MAIN_BACKGROUND, textAlign: 'center'}}>
+                    <Grid item xs={12}>
+                        Home-Presence
+                    </Grid>
+                </Grid>
                 <input
                     type="range"
                     min="1"
