@@ -1,11 +1,10 @@
-FROM python:3.6
+FROM python:3.7-slim
 
-RUN apt-get update
-RUN apt-get install nmap -y
-RUN apt-get install --reinstall libpq-dev -y
-#=7.70 -y
-
-#RUN ln -s /usr/include/postgresql/libpq-fe.h /usr/include/
+RUN apt-get update && apt-get install -y \
+    gcc \
+    nmap \
+    libpq-dev \
+    && apt-get clean
 
 RUN mkdir /app
 COPY ./requirements.txt /app/requirements.txt

@@ -242,8 +242,8 @@ def get_time_for_mac():
             .group_by('curr_time', LogUser.user_uuid)
             .subquery())
 
-    # Get users grouped by time from user that are grouped by time and id,
-    # this will give count of different users per time
+    # Get times grouped by time from specific user (filtered by user mac) that are grouped by time and id,
+    # this will give present times for specific user
     nums_db = (db.session.query(distinct_users.c.curr_time)
                .group_by(distinct_users.c.curr_time)
                .order_by(desc(distinct_users.c.curr_time))
