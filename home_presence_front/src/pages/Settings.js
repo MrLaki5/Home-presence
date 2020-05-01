@@ -60,7 +60,7 @@ class MacDevice extends React.Component {
             // update the state of the component with the result here
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
-            if (data_obj["status"] == "success"){
+            if (data_obj["status"] === "success"){
                 if (this.state.worker_status === "TURN ON"){
                     this.setState(state => ({
                         worker_status: "TURN OFF"

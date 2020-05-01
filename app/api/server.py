@@ -260,7 +260,7 @@ def get_time_for_mac():
         return_nums.append({"time": time_curr.strftime("%d/%m/%Y, %H:%M:%S")})
     return_message = {
         "status": "success",
-        "mac_logs": return_nums
+        "times": return_nums
     }
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")
