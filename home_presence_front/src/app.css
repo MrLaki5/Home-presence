@@ -1,0 +1,23 @@
+:root {
+    --main-bg-color: #FFFFFF;
+    --main-primary-color: #0B6623;
+}
+
+@font-face {
+    font-family: 'Collegia';
+    src: local('Collegia'), url(./fonts/COLLEGIA.ttf) format('truetype');
+}
+
+.MainContainer {
+    width: 100%;
+    padding-left: 20%;
+    padding-right: 20%;
+    background-color: var(--main-bg-color);
+    text-align: center;
+}
+
+.Title {
+    font-family: 'Collegia';
+    font-size: 3vw;
+    color: var(--main-primary-color);
+}
