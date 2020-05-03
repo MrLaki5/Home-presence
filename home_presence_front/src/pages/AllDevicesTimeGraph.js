@@ -7,6 +7,8 @@ import { Redirect } from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Hidden from '@material-ui/core/Hidden';
+import Slider from '@material-ui/core/Slider';
+import Typography from '@material-ui/core/Typography';
 
 
 class App extends React.Component {
@@ -16,6 +18,7 @@ class App extends React.Component {
         this.state = {
             devices: [],
             top_val: 10,
+            top_val_cur: 10,
             time: "hour",
             go_settings: false,
             _1h_opacity: 1,
@@ -28,6 +31,7 @@ class App extends React.Component {
         this.handleSelectTimeChange = this.handleSelectTimeChange.bind(this)
         this.goSettings = this.goSettings.bind(this)
         this.handleClickTime = this.handleClickTime.bind(this)
+        this.handleTopVal = this.handleTopVal.bind(this)
     }
 
     componentDidMount() {
@@ -116,6 +120,21 @@ class App extends React.Component {
         }
     }
 
+    handleTopVal(event, value){
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
+        this.setState(state => ({
+            top_val_cur: value
+        }));
+        this.timeout = setTimeout(() => {
+            this.setState(state => ({
+                top_val: value
+            })
+            , () => this.getData());
+        }, 500);
+    }
+
     render() {
         if (this.state.go_settings) {
             return <Redirect to={{
@@ -123,89 +142,110 @@ class App extends React.Component {
             }}/>;
         }
         return (
-            <div>
-                <Grid container className='MainContainer'>
+            <Grid container className='MainContainer'>
+                
+                {/* Title */}
+                <Grid item xs={12} >
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Title PC */}
+                        <div className='Title'>
+                            Home-Presence
+                        </div>
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Title Mobile */}
+                        <div className='TitleMobile'>
+                            Home-Presence
+                        </div>
+                    </Hidden>
+                </Grid>
+                
+                {/* Time Group */}
+                <Grid container item xs={12}>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                    <Grid item xs={3} md={1}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
+                        </Hidden>
+                    </Grid>
+                    <Grid item xs={3} md={1}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={() => this.handleClickTime('24h')}>Day</Button>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={() => this.handleClickTime('24h')}>Day</Button>
+                        </Hidden>
+                    </Grid>
+                    <Grid item xs={3} md={1}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1m_opacity}} onClick={() => this.handleClickTime('1m')}>Month</Button>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1m_opacity}} onClick={() => this.handleClickTime('1m')}>Month</Button>
+                        </Hidden>
+                    </Grid>
+                    <Grid item xs={3} md={1}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1y_opacity}} onClick={() => this.handleClickTime('1y')}>Year</Button>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1y_opacity}} onClick={() => this.handleClickTime('1y')}>Year</Button>
+                        </Hidden>
+                    </Grid>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                </Grid>
 
-                    <Grid item xs={12} >
+                {/* Samples */}
+                <Grid container item xs={12}>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                    <Grid item xs={12} md={4}>
+                        <Slider
+                            style={{color: 'var(--main-primary-color)', opacity: '0.7'}}
+                            value={this.state.top_val_cur}
+                            valueLabelDisplay="off"
+                            onChange={this.handleTopVal}
+                            min={1}
+                            max={20}
+                            aria-labelledby="discrete-slider-always"
+                        />
                         <Hidden only={['xs', 'sm']}>
                             {/* Title PC */}
-                            <div className='Title'>
-                                Home-Presence
+                            <div className='TextForm'>
+                                Samples: {this.state.top_val_cur}
                             </div>
                         </Hidden>
                         <Hidden only={['md', 'lg', 'xl']}>
                             {/* Title Mobile */}
-                            <div className='TitleMobile'>
-                                Home-Presence
+                            <div className='TextFormMobile'>
+                                Samples: {this.state.top_val_cur}
                             </div>
                         </Hidden>
                     </Grid>
-                        
-                    <Grid container item xs={12}>
-                        <Grid item only={['md', 'xl']} md={4}></Grid>
-                        <Grid item xs={3} md={1}>
-                            <Hidden only={['xs', 'sm']}>
-                                {/* Button PC */}
-                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
-                            </Hidden>
-                            <Hidden only={['md', 'lg', 'xl']}>
-                                {/* Button Mobile */}
-                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
-                            </Hidden>
-                        </Grid>
-                        <Grid item xs={3} md={1}>
-                            <Hidden only={['xs', 'sm']}>
-                                {/* Button PC */}
-                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={() => this.handleClickTime('24h')}>Day</Button>
-                            </Hidden>
-                            <Hidden only={['md', 'lg', 'xl']}>
-                                {/* Button Mobile */}
-                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={() => this.handleClickTime('24h')}>Day</Button>
-                            </Hidden>
-                        </Grid>
-                        <Grid item xs={3} md={1}>
-                            <Hidden only={['xs', 'sm']}>
-                                {/* Button PC */}
-                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1m_opacity}} onClick={() => this.handleClickTime('1m')}>Month</Button>
-                            </Hidden>
-                            <Hidden only={['md', 'lg', 'xl']}>
-                                {/* Button Mobile */}
-                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1m_opacity}} onClick={() => this.handleClickTime('1m')}>Month</Button>
-                            </Hidden>
-                        </Grid>
-                        <Grid item xs={3} md={1}>
-                            <Hidden only={['xs', 'sm']}>
-                                {/* Button PC */}
-                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1y_opacity}} onClick={() => this.handleClickTime('1y')}>Year</Button>
-                            </Hidden>
-                            <Hidden only={['md', 'lg', 'xl']}>
-                                {/* Button Mobile */}
-                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1y_opacity}} onClick={() => this.handleClickTime('1y')}>Year</Button>
-                            </Hidden>
-                        </Grid>
-                        <Grid item only={['md', 'xl']} md={4}></Grid>
-                    </Grid>
-
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>
-                <input
-                    type="range"
-                    min="1"
-                    max="20"
-                    value={this.state.top_val}
-                    onChange={this.handleInputChange}
-                />
-                <select
-                    value={this.state.time}
-                    onChange={this.handleSelectTimeChange}
-                >
-                  <option value="hour">Hour</option>
-                  <option value="day">Day</option>
-                  <option value="month">Month</option>
-                  <option value="year">Year</option>
-                </select>
-                <a onClick={this.goSettings}> Settings </a>
-                <Graph devices_num={this.state.devices} time_group={this.state.time}/>
-            </div>
+
+                {/* Settings */}
+                <Grid item xs={12}>
+                    <a onClick={this.goSettings}> Settings </a>
+                </Grid>
+
+                {/* Graph */}
+                <Grid item xs={12}>
+                    <Graph devices_num={this.state.devices} time_group={this.state.time}/>
+                </Grid>
+
+            </Grid>
         );
     }
 }
