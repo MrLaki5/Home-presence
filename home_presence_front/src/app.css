@@ -8,6 +8,10 @@
     src: local('Collegia'), url(./fonts/COLLEGIA.ttf) format('truetype');
 }
 
+body {
+    margin: 0%;
+}
+
 .MainContainer {
     width: 100%;
     background-color: var(--main-bg-color);
@@ -36,6 +40,6 @@
 
 .TextFormMobile {
     font-family: 'Collegia';
-    font-size: 3vw;
+    font-size: 3.5vw;
     color: var(--main-primary-color);
 }
