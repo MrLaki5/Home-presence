@@ -133,7 +133,7 @@ class App extends React.Component {
                                 Home-Presence
                             </div>
                         </Hidden>
-                        <Hidden only={['md', 'xl']}>
+                        <Hidden only={['md', 'lg', 'xl']}>
                             {/* Title Mobile */}
                             <div className='TitleMobile'>
                                 Home-Presence
@@ -148,20 +148,40 @@ class App extends React.Component {
                                 {/* Button PC */}
                                 <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
                             </Hidden>
-                            <Hidden only={['md', 'xl']}>
+                            <Hidden only={['md', 'lg', 'xl']}>
                                 {/* Button Mobile */}
                                 <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
                             </Hidden>
-                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
                         </Grid>
                         <Grid item xs={3} md={1}>
-                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={() => this.handleClickTime('24h')}>Day</Button>
+                            <Hidden only={['xs', 'sm']}>
+                                {/* Button PC */}
+                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={() => this.handleClickTime('24h')}>Day</Button>
+                            </Hidden>
+                            <Hidden only={['md', 'lg', 'xl']}>
+                                {/* Button Mobile */}
+                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={() => this.handleClickTime('24h')}>Day</Button>
+                            </Hidden>
                         </Grid>
                         <Grid item xs={3} md={1}>
-                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1m_opacity}} onClick={() => this.handleClickTime('1m')}>Month</Button>
+                            <Hidden only={['xs', 'sm']}>
+                                {/* Button PC */}
+                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1m_opacity}} onClick={() => this.handleClickTime('1m')}>Month</Button>
+                            </Hidden>
+                            <Hidden only={['md', 'lg', 'xl']}>
+                                {/* Button Mobile */}
+                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1m_opacity}} onClick={() => this.handleClickTime('1m')}>Month</Button>
+                            </Hidden>
                         </Grid>
                         <Grid item xs={3} md={1}>
-                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1y_opacity}} onClick={() => this.handleClickTime('1y')}>Year</Button>
+                            <Hidden only={['xs', 'sm']}>
+                                {/* Button PC */}
+                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1y_opacity}} onClick={() => this.handleClickTime('1y')}>Year</Button>
+                            </Hidden>
+                            <Hidden only={['md', 'lg', 'xl']}>
+                                {/* Button Mobile */}
+                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1y_opacity}} onClick={() => this.handleClickTime('1y')}>Year</Button>
+                            </Hidden>
                         </Grid>
                         <Grid item only={['md', 'xl']} md={4}></Grid>
                     </Grid>
