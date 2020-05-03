@@ -5,6 +5,8 @@ import '../app.css'
 import { Redirect } from "react-router-dom";
 
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import Hidden from '@material-ui/core/Hidden';
 
 
 class App extends React.Component {
@@ -15,12 +17,17 @@ class App extends React.Component {
             devices: [],
             top_val: 10,
             time: "hour",
-            go_settings: false
+            go_settings: false,
+            _1h_opacity: 1,
+            _24h_opacity: 0.5,
+            _1m_opacity: 0.5,
+            _1y_opacity: 0.5
         };
         this.getData = this.getData.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSelectTimeChange = this.handleSelectTimeChange.bind(this)
         this.goSettings = this.goSettings.bind(this)
+        this.handleClickTime = this.handleClickTime.bind(this)
     }
 
     componentDidMount() {
@@ -62,6 +69,53 @@ class App extends React.Component {
         }));
     }
 
+    handleClickTime(time_clk) {
+        switch(time_clk){
+            case "1h":
+                this.setState(state => ({
+                    _1h_opacity: 1,
+                    _24h_opacity: 0.5,
+                    _1m_opacity: 0.5,
+                    _1y_opacity: 0.5,
+                    time: "hour"
+                })
+                , () => this.getData());
+                break;
+            case "24h":
+                this.setState(state => ({
+                    _1h_opacity: 0.5,
+                    _24h_opacity: 1,
+                    _1m_opacity: 0.5,
+                    _1y_opacity: 0.5,
+                    time: "day"
+                })
+                , () => this.getData());
+                break;
+            case "1m":
+                this.setState(state => ({
+                    _1h_opacity: 0.5,
+                    _24h_opacity: 0.5,
+                    _1m_opacity: 1,
+                    _1y_opacity: 0.5,
+                    time: "month"
+                })
+                , () => this.getData());
+                break;
+            case "1y":
+                this.setState(state => ({
+                    _1h_opacity: 0.5,
+                    _24h_opacity: 0.5,
+                    _1m_opacity: 0.5,
+                    _1y_opacity: 1,
+                    time: "year"
+                })
+                , () => this.getData());
+                break;
+            default:
+                break;
+        }
+    }
+
     render() {
         if (this.state.go_settings) {
             return <Redirect to={{
@@ -70,10 +124,48 @@ class App extends React.Component {
         }
         return (
             <div>
-                <Grid container spacing={3} className='MainContainer'>
-                    <Grid item xs={12} className='Title'>
-                        Home-Presence
+                <Grid container className='MainContainer'>
+
+                    <Grid item xs={12} >
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Title PC */}
+                            <div className='Title'>
+                                Home-Presence
+                            </div>
+                        </Hidden>
+                        <Hidden only={['md', 'xl']}>
+                            {/* Title Mobile */}
+                            <div className='TitleMobile'>
+                                Home-Presence
+                            </div>
+                        </Hidden>
                     </Grid>
+                        
+                    <Grid container item xs={12}>
+                        <Grid item only={['md', 'xl']} md={4}></Grid>
+                        <Grid item xs={3} md={1}>
+                            <Hidden only={['xs', 'sm']}>
+                                {/* Button PC */}
+                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
+                            </Hidden>
+                            <Hidden only={['md', 'xl']}>
+                                {/* Button Mobile */}
+                                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
+                            </Hidden>
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
+                        </Grid>
+                        <Grid item xs={3} md={1}>
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={() => this.handleClickTime('24h')}>Day</Button>
+                        </Grid>
+                        <Grid item xs={3} md={1}>
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1m_opacity}} onClick={() => this.handleClickTime('1m')}>Month</Button>
+                        </Grid>
+                        <Grid item xs={3} md={1}>
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1y_opacity}} onClick={() => this.handleClickTime('1y')}>Year</Button>
+                        </Grid>
+                        <Grid item only={['md', 'xl']} md={4}></Grid>
+                    </Grid>
+
                 </Grid>
                 <input
                     type="range"
