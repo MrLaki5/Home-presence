@@ -1,6 +1,12 @@
 import React from 'react';
 import { Redirect } from "react-router-dom";
 
+import Menu_HP from '../components/Menu_HP'
+import Title_HP from '../components/Title_HP'
+import '../app.css'
+
+import Grid from '@material-ui/core/Grid';
+
 
 class MacDevice extends React.Component {
 
@@ -91,12 +97,20 @@ class MacDevice extends React.Component {
                 pathname: "/"
             }}/>;
         }
-        return  <div>
+        return  <Grid container className='MainContainer'>
+
+                    {/* Title */}
+                    <Title_HP/>
+
+
+                    {/* Menu */}
+                    <Menu_HP current_page={2}/>
+
                     <div>
                         <button onClick={this.sendWorkerChange}> {this.state.worker_status} </button>
                     </div>
                     <a onClick={this.goBack}> Back </a>
-                </div>
+                </Grid>
     }
 }
 

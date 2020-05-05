@@ -1,6 +1,8 @@
 import React from 'react';
 
 import Graph from '../components/Graph'
+import Menu_HP from '../components/Menu_HP'
+import Title_HP from '../components/Title_HP'
 import '../app.css'
 import { Redirect } from "react-router-dom";
 
@@ -8,11 +10,6 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Hidden from '@material-ui/core/Hidden';
 import Slider from '@material-ui/core/Slider';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import PhoneIcon from '@material-ui/icons/Phone';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import PersonPinIcon from '@material-ui/icons/PersonPin';
 
 
 class App extends React.Component {
@@ -149,57 +146,11 @@ class App extends React.Component {
             <Grid container className='MainContainer'>
                 
                 {/* Title */}
-                <Grid item xs={12}>
-                    <Hidden only={['xs', 'sm']}>
-                        {/* Title PC */}
-                        <div className='Title'>
-                            Home-Presence
-                        </div>
-                    </Hidden>
-                    <Hidden only={['md', 'lg', 'xl']}>
-                        {/* Title Mobile */}
-                        <div className='TitleMobile'>
-                            Home-Presence
-                        </div>
-                    </Hidden>
-                </Grid>
+                <Title_HP/>
 
 
                 {/* Menu */}
-                <Grid container item xs={12}>
-                    <Grid item xs={4}>
-                        <Hidden only={['xs', 'sm']}>
-                            {/* Button PC */}
-                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>All</Button>
-                        </Hidden>
-                        <Hidden only={['md', 'lg', 'xl']}>
-                            {/* Button Mobile */}
-                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>All</Button>
-                        </Hidden>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                        <Hidden only={['xs', 'sm']}>
-                            {/* Button PC */}
-                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={ () => this.handleClickTime('1h')}>Search</Button>
-                        </Hidden>
-                        <Hidden only={['md', 'lg', 'xl']}>
-                            {/* Button Mobile */}
-                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={ () => this.handleClickTime('1h')}>Search</Button>
-                        </Hidden>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                        <Hidden only={['xs', 'sm']}>
-                            {/* Button PC */}
-                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={ () => this.handleClickTime('1h')}>Settings</Button>
-                        </Hidden>
-                        <Hidden only={['md', 'lg', 'xl']}>
-                            {/* Button Mobile */}
-                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={ () => this.handleClickTime('1h')}>Settings</Button>
-                        </Hidden>
-                    </Grid>
-                </Grid>
+                <Menu_HP current_page={0}/>
                 
                 
                 {/* Time Group */}
