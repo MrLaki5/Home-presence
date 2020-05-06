@@ -1,11 +1,12 @@
 import React from 'react';
-import { Redirect } from "react-router-dom";
 
 import Menu_HP from '../components/Menu_HP'
 import Title_HP from '../components/Title_HP'
 import '../app.css'
 
 import Grid from '@material-ui/core/Grid';
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Switch from '@material-ui/core/Switch'
 
 
 class MacDevice extends React.Component {
@@ -13,18 +14,10 @@ class MacDevice extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            go_back: false,
-            worker_status: "TURN ON"
+            worker_status: false
         };
-        this.goBack = this.goBack.bind(this)
         this.checkWorkerStatus = this.checkWorkerStatus.bind(this)
         this.sendWorkerChange = this.sendWorkerChange.bind(this)
-    }
-
-    goBack() {
-        this.setState(state => ({
-            go_back: true
-        }));
     }
 
     componentDidMount() {
@@ -42,12 +35,12 @@ class MacDevice extends React.Component {
             var data_obj = JSON.parse(xhr.responseText);
             if (data_obj["state"] === "running"){
                 this.setState(state => ({
-                    worker_status: "TURN OFF"
+                    worker_status: true
                 }));
             }
             else {
                 this.setState(state => ({
-                    worker_status: "TURN ON"
+                    worker_status: false
                 }));
             }
         })
@@ -67,19 +60,19 @@ class MacDevice extends React.Component {
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
             if (data_obj["status"] === "success"){
-                if (this.state.worker_status === "TURN ON"){
+                if (this.state.worker_status === false){
                     this.setState(state => ({
-                        worker_status: "TURN OFF"
+                        worker_status: true
                     }));
                 }
                 else {
                     this.setState(state => ({
-                        worker_status: "TURN ON"
+                        worker_status: false
                     }));
                 }
             }
         })
-        if (this.state.worker_status === "TURN ON"){
+        if (this.state.worker_status === false){
             // open the request with the verb and the url
             xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/workers_start')
         }
@@ -92,11 +85,6 @@ class MacDevice extends React.Component {
     }
 
     render() {
-        if (this.state.go_back) {
-            return <Redirect to={{
-                pathname: "/"
-            }}/>;
-        }
         return  <Grid container className='MainContainer'>
 
                     {/* Title */}
@@ -106,10 +94,23 @@ class MacDevice extends React.Component {
                     {/* Menu */}
                     <Menu_HP current_page={2}/>
 
-                    <div>
-                        <button onClick={this.sendWorkerChange}> {this.state.worker_status} </button>
-                    </div>
-                    <a onClick={this.goBack}> Back </a>
+
+                    <Grid item xs={12}>
+                        <FormControlLabel
+                            style={{color: 'var(--main-primary-color)', fontSize: '3.5vw'}}
+                            control={
+                                <Switch
+                                    style={{color: 'var(--main-primary-color)'}}
+                                    checked={this.state.worker_status}
+                                    onChange={this.sendWorkerChange}
+                                    value="checkedB"
+                                    color="secondary"
+                                />
+                            }
+                            label="Active mode"
+                        />
+                    </Grid>
+
                 </Grid>
     }
 }

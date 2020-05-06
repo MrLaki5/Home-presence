@@ -8,6 +8,10 @@
     src: local('Collegia'), url(./fonts/COLLEGIA.ttf) format('truetype');
 }
 
+* {
+    font-family: 'Collegia' !important;
+}
+
 body {
     margin: 0%;
 }
