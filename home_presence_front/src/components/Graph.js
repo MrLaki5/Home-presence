@@ -2,6 +2,8 @@ import React from 'react';
 import { VictoryChart, VictoryAxis, VictoryBar } from 'victory';
 import { Redirect } from "react-router-dom";
 
+import '../app.css'
+
 class Graph extends React.Component {
 
     constructor(props) {
@@ -37,11 +39,11 @@ class Graph extends React.Component {
         return (
             <div>
                 <VictoryChart
-                    style={{parent: {backgroundColor: "#FFFFFF"}}}
+                    style={{parent: {backgroundColor: "var(--main-bg-color)"}}}
                     domainPadding={20}
                 >
                     <VictoryBar
-                        style={{ data: { stroke: "#000000" } }}
+                        style={{ data: { stroke: "var(--main-primary-color)", fill: "var(--main-primary-color)" } }}
                         data={devices}
                         events={[
                             {
@@ -69,10 +71,10 @@ class Graph extends React.Component {
                         tickFormat={(x) => ((devices.length === 0) ? "" :
                         String(x).split(" ")[0] + "\n" + String(x).split(" ")[1])}
                         style={{
-                            tickLabels: {fill: 'black', fontSize: 7, angle: -40},
-                            axis: {stroke: "#000000"},
-                            labels: {fill: 'black', fontSize: 10},
-                            grid: {stroke: "#000000"}
+                            tickLabels: {fill: 'var(--main-primary-color)', fontSize: 7, angle: -40, fontFamilly: 'Collegia'},
+                            axis: {stroke: "var(--main-primary-color)"},
+                            labels: {fill: 'var(--main-primary-color)', fontSize: 10, fontFamilly: 'Collegia'},
+                            grid: {stroke: "var(--main-primary-color)"}
                         }}
                     />
                     <VictoryAxis
@@ -83,10 +85,10 @@ class Graph extends React.Component {
                         tickFormat = {labelYFunction}
                         label="Number"
                         style={{
-                            tickLabels: {fill: '#000000', fontSize: 8},
-                            axis: {stroke: "#000000"},
-                            axisLabel: {fill: '#000000', fontSize: 9},
-                            grid: {stroke: "#000000"}
+                            tickLabels: {fill: 'var(--main-primary-color)', fontSize: 8, fontFamilly: 'Collegia'},
+                            axis: {stroke: "var(--main-primary-color)"},
+                            axisLabel: {fill: 'var(--main-primary-color)', fontSize: 9, fontFamilly: 'Collegia'},
+                            grid: {stroke: "var(--main-primary-color)"}
                         }}
                     />
                 </VictoryChart>

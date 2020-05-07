@@ -110,7 +110,7 @@ class MacDevice extends React.Component {
                                         color="secondary"
                                     />
                                 }
-                                label="Active mode"
+                                label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
                             />
                         </Hidden>
                         <Hidden only={['md', 'lg', 'xl']}>
@@ -126,7 +126,7 @@ class MacDevice extends React.Component {
                                         color="secondary"
                                     />
                                 }
-                                label="Active mode"
+                                label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
                             />
                         </Hidden>
 
