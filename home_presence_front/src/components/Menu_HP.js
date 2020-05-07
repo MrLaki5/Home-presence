@@ -57,7 +57,7 @@ class Menu_HP extends React.Component {
                 <Grid item xs={4}>
                     <Hidden only={['xs', 'sm']}>
                         {/* Button PC */}
-                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 0) ? 1 : 0.5}} onClick={ () => this.redirectFunction('0')}>All</Button>
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 0) ? 1 : 0.5}} onClick={ () => this.redirectFunction('0')}>All</Button>
                     </Hidden>
                     <Hidden only={['md', 'lg', 'xl']}>
                         {/* Button Mobile */}
@@ -68,7 +68,7 @@ class Menu_HP extends React.Component {
                 <Grid item xs={4}>
                     <Hidden only={['xs', 'sm']}>
                         {/* Button PC */}
-                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 1) ? 1 : 0.5}} onClick={ () => this.redirectFunction('1')}>Search</Button>
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 1) ? 1 : 0.5}} onClick={ () => this.redirectFunction('1')}>Search</Button>
                     </Hidden>
                     <Hidden only={['md', 'lg', 'xl']}>
                         {/* Button Mobile */}
@@ -79,7 +79,7 @@ class Menu_HP extends React.Component {
                 <Grid item xs={4}>
                     <Hidden only={['xs', 'sm']}>
                         {/* Button PC */}
-                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 2) ? 1 : 0.5}} onClick={ () => this.redirectFunction('2')}>Settings</Button>
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 2) ? 1 : 0.5}} onClick={ () => this.redirectFunction('2')}>Settings</Button>
                     </Hidden>
                     <Hidden only={['md', 'lg', 'xl']}>
                         {/* Button Mobile */}

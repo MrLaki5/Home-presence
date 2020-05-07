@@ -38,13 +38,13 @@ body {
 
 .TextForm {
     font-family: 'Collegia';
-    font-size: 1.5vw;
+    font-size: 1vw;
     color: var(--main-primary-color);
 }
 
 .TextFormMobile {
     font-family: 'Collegia';
-    font-size: 3.5vw;
+    font-size: 3vw;
     color: var(--main-primary-color);
 }
 
