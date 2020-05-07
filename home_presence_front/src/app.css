@@ -47,3 +47,7 @@ body {
     font-size: 3.5vw;
     color: var(--main-primary-color);
 }
+
+.MuiSwitch-track {
+    background-color: var(--main-primary-color) !important;
+}

@@ -7,6 +7,7 @@ import '../app.css'
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
+import Hidden from '@material-ui/core/Hidden';
 
 
 class MacDevice extends React.Component {
@@ -96,19 +97,39 @@ class MacDevice extends React.Component {
 
 
                     <Grid item xs={12}>
-                        <FormControlLabel
-                            style={{color: 'var(--main-primary-color)', fontSize: '3.5vw'}}
-                            control={
-                                <Switch
-                                    style={{color: 'var(--main-primary-color)'}}
-                                    checked={this.state.worker_status}
-                                    onChange={this.sendWorkerChange}
-                                    value="checkedB"
-                                    color="secondary"
-                                />
-                            }
-                            label="Active mode"
-                        />
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <FormControlLabel
+                                style={{color: 'var(--main-primary-color)', fontSize: '1.5vw'}}
+                                control={
+                                    <Switch
+                                        style={{color: 'var(--main-primary-color)'}}
+                                        checked={this.state.worker_status}
+                                        onChange={this.sendWorkerChange}
+                                        value="checkedB"
+                                        color="secondary"
+                                    />
+                                }
+                                label="Active mode"
+                            />
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <FormControlLabel
+                                style={{color: 'var(--main-primary-color)', fontSize: '3vw'}}
+                                control={
+                                    <Switch
+                                        style={{color: 'var(--main-primary-color)'}}
+                                        checked={this.state.worker_status}
+                                        onChange={this.sendWorkerChange}
+                                        value="checkedB"
+                                        color="secondary"
+                                    />
+                                }
+                                label="Active mode"
+                            />
+                        </Hidden>
+
                     </Grid>
 
                 </Grid>

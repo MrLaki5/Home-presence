@@ -53,7 +53,7 @@ class Menu_HP extends React.Component {
             }}/>;
         }
         return (
-            <Grid container item xs={12}>
+            <Grid container item xs={12} style={{marginBottom: '3%'}}>
                 <Grid item xs={4}>
                     <Hidden only={['xs', 'sm']}>
                         {/* Button PC */}

@@ -152,8 +152,18 @@ class App extends React.Component {
                 {/* Menu */}
                 <Menu_HP current_page={0}/>
                 
-                
-                {/* Time Group */}
+
+                {/* Graph */}
+                <Grid container item xs={12}>
+                    <Grid item only={['md', 'lg', 'xl']} md={3}></Grid>
+                    <Grid item xs={12} md={6}>
+                        <Graph devices_num={this.state.devices} time_group={this.state.time}/>
+                    </Grid>
+                    <Grid item only={['md', 'lg', 'xl']} md={3}></Grid>
+                </Grid>
+
+
+                {/* Time Group and slider */}
                 <Grid container item xs={12}>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                     <Grid item xs={3} md={1}>
@@ -197,45 +207,36 @@ class App extends React.Component {
                         </Hidden>
                     </Grid>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
-                </Grid>
 
-                {/* Samples */}
-                <Grid container item xs={12}>
-                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
-                    <Grid item xs={12} md={4}>
-                        <Slider
-                            style={{color: 'var(--main-primary-color)', opacity: '0.7'}}
-                            value={this.state.top_val_cur}
-                            valueLabelDisplay="off"
-                            onChange={this.handleTopVal}
-                            min={1}
-                            max={20}
-                            aria-labelledby="discrete-slider-always"
-                        />
-                        <Hidden only={['xs', 'sm']}>
-                            {/* Title PC */}
-                            <div className='TextForm'>
-                                Samples: {this.state.top_val_cur}
-                            </div>
-                        </Hidden>
-                        <Hidden only={['md', 'lg', 'xl']}>
-                            {/* Title Mobile */}
-                            <div className='TextFormMobile'>
-                                Samples: {this.state.top_val_cur}
-                            </div>
-                        </Hidden>
+
+                    {/* Samples */}
+                    <Grid container item xs={12}>
+                        <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                        <Grid item xs={12} md={4}>
+                            <Slider
+                                style={{color: 'var(--main-primary-color)', opacity: '0.7'}}
+                                value={this.state.top_val_cur}
+                                valueLabelDisplay="off"
+                                onChange={this.handleTopVal}
+                                min={1}
+                                max={20}
+                                aria-labelledby="discrete-slider-always"
+                            />
+                            <Hidden only={['xs', 'sm']}>
+                                {/* Title PC */}
+                                <div className='TextForm'>
+                                    Samples: {this.state.top_val_cur}
+                                </div>
+                            </Hidden>
+                            <Hidden only={['md', 'lg', 'xl']}>
+                                {/* Title Mobile */}
+                                <div className='TextFormMobile'>
+                                    Samples: {this.state.top_val_cur}
+                                </div>
+                            </Hidden>
+                        </Grid>
+                        <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                     </Grid>
-                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
-                </Grid>
-
-                {/* Settings */}
-                <Grid item xs={12}>
-                    <a onClick={this.goSettings}> Settings </a>
-                </Grid>
-
-                {/* Graph */}
-                <Grid item xs={12}>
-                    <Graph devices_num={this.state.devices} time_group={this.state.time}/>
                 </Grid>
 
             </Grid>
