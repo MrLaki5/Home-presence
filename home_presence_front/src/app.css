@@ -52,3 +52,11 @@ body {
 .MuiSwitch-track {
     background-color: var(--main-primary-color) !important;
 }
+
+.MuiTableCell-head {
+    color: var(--main-bg-color) !important;
+}
+
+.MuiTableCell-body{
+    color: var(--main-bg-color) !important;
+}

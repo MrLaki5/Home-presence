@@ -92,9 +92,6 @@ class Graph extends React.Component {
                         }}
                     />
                 </VictoryChart>
-                <div>
-
-                </div>
             </div>
         );
     }
