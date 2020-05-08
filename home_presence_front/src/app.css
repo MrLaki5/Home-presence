@@ -57,6 +57,10 @@ body {
     color: var(--main-bg-color) !important;
 }
 
+.MuiTableCell-root {
+    border-bottom: 0px !important;
+}
+
 .MuiTableCell-body{
     color: var(--main-bg-color) !important;
 }

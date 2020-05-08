@@ -64,6 +64,8 @@ class DevicesInTime extends React.Component {
     }
 
     goDevice(dev_name, dev_mac) {
+        console.log("name: " + dev_name)
+        console.log("mac: " + dev_mac)
         this.setState(state => ({
             go_device: true,
             dev_name: dev_name,
@@ -81,9 +83,9 @@ class DevicesInTime extends React.Component {
             return <Redirect to={{
                 pathname: "/mac_device",
                 state: {
-                    mac: this.props.dev_mac,
+                    mac: this.state.dev_mac,
                     time_back: this.props.location.state.time,
-                    name: this.props.dev_name,
+                    name: this.state.dev_name,
                     time_group: this.props.location.state.time_group
                 }
             }}/>;
@@ -106,6 +108,10 @@ class DevicesInTime extends React.Component {
                         <TableContainer component={Paper}>
                             <Table aria-label="simple table" style={{color: "var(--main-bg-color)"}}>
                                 <TableHead style={{backgroundColor: "var(--main-primary-color)", color: "var(--main-bg-color) !important"}}>
+                                <TableRow>
+                                    <TableCell>Time: {this.props.location.state.time_group} [{this.props.location.state.time}]</TableCell>
+                                    <TableCell align="right">Count: {this.state.macs.length}</TableCell>
+                                </TableRow>
                                 <TableRow>
                                     <TableCell>MAC address</TableCell>
                                     <TableCell align="right">User</TableCell>

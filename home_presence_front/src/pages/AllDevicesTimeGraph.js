@@ -219,7 +219,7 @@ class App extends React.Component {
                                 valueLabelDisplay="off"
                                 onChange={this.handleTopVal}
                                 min={1}
-                                max={20}
+                                max={15}
                                 aria-labelledby="discrete-slider-always"
                             />
                             <Hidden only={['xs', 'sm']}>

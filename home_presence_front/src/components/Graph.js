@@ -43,7 +43,7 @@ class Graph extends React.Component {
                     domainPadding={20}
                 >
                     <VictoryBar
-                        style={{ data: { stroke: "var(--main-primary-color)", fill: "var(--main-primary-color)" } }}
+                        style={{ data: { stroke: "var(--main-primary-color)", fill: "var(--main-primary-color)", cursor: "pointer" }}}
                         data={devices}
                         events={[
                             {
