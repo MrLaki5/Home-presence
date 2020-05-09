@@ -1,6 +1,5 @@
 import React from 'react';
 import { Redirect } from "react-router-dom";
-import MacDeviceLine from "../components/MacDeviceLine"
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,6 +9,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
+import Button from '@material-ui/core/Button';
 
 import Menu_HP from '../components/Menu_HP'
 import Title_HP from '../components/Title_HP'
@@ -101,29 +102,75 @@ class DevicesInTime extends React.Component {
                 {/* Menu */}
                 <Menu_HP current_page={0}/>
 
+                {/* Back button */}
+                <Grid container item xs={12} style={{marginBottom: '1.5%'}}>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                    <Grid item xs={12} md={4}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} onClick={ () => this.goBack()}>Back</Button>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} onClick={ () => this.goBack()}>Back</Button>
+                        </Hidden>
+                    </Grid>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                </Grid>
+
                 {/* Tabble */}
                 <Grid container item xs={12}>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                     <Grid item xs={12} md={4}>
-                        <TableContainer component={Paper}>
+                        <TableContainer component={Paper} style={{borderRadius: '0%'}}>
                             <Table aria-label="simple table" style={{color: "var(--main-bg-color)"}}>
                                 <TableHead style={{backgroundColor: "var(--main-primary-color)", color: "var(--main-bg-color) !important"}}>
-                                <TableRow>
-                                    <TableCell>Time: {this.props.location.state.time_group} [{this.props.location.state.time}]</TableCell>
-                                    <TableCell align="right">Count: {this.state.macs.length}</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>MAC address</TableCell>
-                                    <TableCell align="right">User</TableCell>
-                                </TableRow>
+                                    <TableRow>
+                                        <Hidden only={['xs', 'sm']}>
+                                            {/* Button PC */}
+                                            <TableCell style={{fontSize: "1vw"}}>Time: {this.props.location.state.time_group} [{this.props.location.state.time}]</TableCell>
+                                            <TableCell align="right" style={{fontSize: "1vw"}}>Count: {this.state.macs.length}</TableCell>
+                                        </Hidden>
+                                        <Hidden only={['md', 'lg', 'xl']}>
+                                            {/* Button Mobile */}
+                                            <TableCell style={{fontSize: "3vw"}}>Time: {this.props.location.state.time_group} [{this.props.location.state.time}]</TableCell>
+                                            <TableCell align="right" style={{fontSize: "3vw"}}>Count: {this.state.macs.length}</TableCell>
+                                        </Hidden>
+                                    </TableRow>
+                                    <TableRow>
+                                        <Hidden only={['xs', 'sm']}>
+                                            {/* Button PC */}
+                                            <TableCell style={{fontSize: "1vw"}}>MAC address</TableCell>
+                                            <TableCell align="right" style={{fontSize: "1vw"}}>User</TableCell>
+                                        </Hidden>
+                                        <Hidden only={['md', 'lg', 'xl']}>
+                                            {/* Button Mobile */}
+                                            <TableCell style={{fontSize: "3vw"}}>MAC address</TableCell>
+                                            <TableCell align="right" style={{fontSize: "3vw"}}>User</TableCell>
+                                        </Hidden>
+                                    </TableRow>
                                 </TableHead>
                                 <TableBody style={{backgroundColor: "var(--main-primary-color)", opacity: "0.5"}}>
                                 {this.state.macs.map((mac, index) => (
                                     <TableRow key={index} onClick={() => this.goDevice(mac.name, mac.mac)} style={{cursor: "pointer"}}>
-                                    <TableCell component="th" scope="row">
-                                        {mac.mac}
-                                    </TableCell>
-                                    <TableCell align="right">{mac.name}</TableCell>
+                                        <Hidden only={['xs', 'sm']}>
+                                            {/* Button PC */}
+                                            <TableCell style={{fontSize: "1vw"}} component="th" scope="row">
+                                                {mac.mac}
+                                            </TableCell>
+                                            <TableCell style={{fontSize: "1vw"}} align="right">
+                                                {mac.name}
+                                            </TableCell>
+                                        </Hidden>
+                                        <Hidden only={['md', 'lg', 'xl']}>
+                                            {/* Button Mobile */}
+                                            <TableCell style={{fontSize: "3vw"}} component="th" scope="row">
+                                                {mac.mac}
+                                            </TableCell>
+                                            <TableCell style={{fontSize: "3vw"}} align="right">
+                                                {mac.name}
+                                            </TableCell>
+                                        </Hidden>
                                     </TableRow>
                                 ))}
                                 </TableBody>
@@ -133,8 +180,6 @@ class DevicesInTime extends React.Component {
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>
 
-
-                    <a onClick={this.goBack}> Back </a>
             </Grid>)
     }
 }
