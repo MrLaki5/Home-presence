@@ -29,6 +29,10 @@ class MacDevice extends React.Component {
             times: [],
             top_val: 10,
             time_group: "hour",
+            _1h_opacity: 1,
+            _24h_opacity: 0.5,
+            _1m_opacity: 0.5,
+            _1y_opacity: 0.5
         };
         this.goBack = this.goBack.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
@@ -101,6 +105,53 @@ class MacDevice extends React.Component {
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         // send the request
         xhr.send(params)
+    }
+
+    handleClickTime(time_clk) {
+        switch(time_clk){
+            case "1h":
+                this.setState(state => ({
+                    _1h_opacity: 1,
+                    _24h_opacity: 0.5,
+                    _1m_opacity: 0.5,
+                    _1y_opacity: 0.5,
+                    time_group: "hour"
+                })
+                , () => this.getData());
+                break;
+            case "24h":
+                this.setState(state => ({
+                    _1h_opacity: 0.5,
+                    _24h_opacity: 1,
+                    _1m_opacity: 0.5,
+                    _1y_opacity: 0.5,
+                    time_group: "day"
+                })
+                , () => this.getData());
+                break;
+            case "1m":
+                this.setState(state => ({
+                    _1h_opacity: 0.5,
+                    _24h_opacity: 0.5,
+                    _1m_opacity: 1,
+                    _1y_opacity: 0.5,
+                    time_group: "month"
+                })
+                , () => this.getData());
+                break;
+            case "1y":
+                this.setState(state => ({
+                    _1h_opacity: 0.5,
+                    _24h_opacity: 0.5,
+                    _1m_opacity: 0.5,
+                    _1y_opacity: 1,
+                    time_group: "year"
+                })
+                , () => this.getData());
+                break;
+            default:
+                break;
+        }
     }
 
     render() {
@@ -201,6 +252,51 @@ class MacDevice extends React.Component {
 
                 </Grid>
 
+                {/* Time Group and slider */}
+                <Grid container item xs={12}>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                    <Grid item xs={3} md={1}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '2.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1h_opacity}} onClick={ () => this.handleClickTime('1h')}>Hour</Button>
+                        </Hidden>
+                    </Grid>
+                    <Grid item xs={3} md={1}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={() => this.handleClickTime('24h')}>Day</Button>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '2.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._24h_opacity}} onClick={() => this.handleClickTime('24h')}>Day</Button>
+                        </Hidden>
+                    </Grid>
+                    <Grid item xs={3} md={1}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1m_opacity}} onClick={() => this.handleClickTime('1m')}>Month</Button>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '2.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1m_opacity}} onClick={() => this.handleClickTime('1m')}>Month</Button>
+                        </Hidden>
+                    </Grid>
+                    <Grid item xs={3} md={1}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1y_opacity}} onClick={() => this.handleClickTime('1y')}>Year</Button>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <Button size='small' disableRipple={true} fullWidth style={{fontSize: '2.5vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: this.state._1y_opacity}} onClick={() => this.handleClickTime('1y')}>Year</Button>
+                        </Hidden>
+                    </Grid>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                </Grid>
 
                 {/* Tabble */}
                 <Grid container item xs={12}>
@@ -252,15 +348,6 @@ class MacDevice extends React.Component {
                         value={this.state.top_val}
                         onChange={this.handleInputChange}
                     />
-                    <select
-                        value={this.state.time_group}
-                        onChange={this.handleSelectTimeChange}
-                    >
-                        <option value="hour">Hour</option>
-                        <option value="day">Day</option>
-                        <option value="month">Month</option>
-                        <option value="year">Year</option>
-                    </select>
                 </div>
 
             </Grid>)
