@@ -1,6 +1,5 @@
 import React from 'react';
 import { Redirect } from "react-router-dom";
-import TimeLine from '../components/TimeLine';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -120,9 +119,7 @@ class MacDevice extends React.Component {
             }}/>;
             }
         }
-        const times = this.state.times.map((time_curr, index) =>
-            <TimeLine key={index} time={time_curr}/>
-        );
+
         return (
             <Grid container className='MainContainer'>
                 
@@ -132,6 +129,7 @@ class MacDevice extends React.Component {
 
                 {/* Menu */}
                 <Menu_HP current_page={0}/> 
+
 
                 {/* Back button */}
                 <Grid container item xs={12} style={{marginBottom: '1.5%'}}>
@@ -149,8 +147,9 @@ class MacDevice extends React.Component {
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>
 
+
                 {/* User and mac info */}
-                <Grid container item xs={12}>
+                <Grid container item xs={12} style={{marginBottom: '2.0%'}}>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                     <Grid item xs={12} md={4}>
                         <TextField
@@ -203,6 +202,48 @@ class MacDevice extends React.Component {
                 </Grid>
 
 
+                {/* Tabble */}
+                <Grid container item xs={12}>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                    <Grid item xs={12} md={4}>
+                        <TableContainer component={Paper} style={{borderRadius: '0%'}}>
+                            <Table aria-label="simple table" style={{color: "var(--main-bg-color)"}}>
+                                <TableHead style={{backgroundColor: "var(--main-primary-color)", color: "var(--main-bg-color) !important"}}>
+                                    <TableRow>
+                                        <Hidden only={['xs', 'sm']}>
+                                            {/* Button PC */}
+                                            <TableCell style={{fontSize: "1vw"}} align="center">Active times</TableCell>
+                                        </Hidden>
+                                        <Hidden only={['md', 'lg', 'xl']}>
+                                            {/* Button Mobile */}
+                                            <TableCell style={{fontSize: "3vw"}} align="center">Active times</TableCell>
+                                        </Hidden>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody style={{backgroundColor: "var(--main-primary-color)", opacity: "0.5"}}>
+                                {this.state.times.map((time_curr, index) => (
+                                    <TableRow key={index}>
+                                        <Hidden only={['xs', 'sm']}>
+                                            {/* Button PC */}
+                                            <TableCell style={{fontSize: "1vw"}} component="th" scope="row" align="center">
+                                                {time_curr.time}
+                                            </TableCell>
+                                        </Hidden>
+                                        <Hidden only={['md', 'lg', 'xl']}>
+                                            {/* Button Mobile */}
+                                            <TableCell style={{fontSize: "3vw"}} component="th" scope="row" align="center">
+                                                {time_curr.time}
+                                            </TableCell>
+                                        </Hidden>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            </TableContainer>
+                    </Grid>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                </Grid>
+
                 <div>
                     <input
                         type="range"
@@ -220,9 +261,6 @@ class MacDevice extends React.Component {
                         <option value="month">Month</option>
                         <option value="year">Year</option>
                     </select>
-                </div>
-                <div>
-                    {times}
                 </div>
 
             </Grid>)
