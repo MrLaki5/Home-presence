@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Slider from '@material-ui/core/Slider';
 
 
 import Menu_HP from '../components/Menu_HP'
@@ -28,6 +29,7 @@ class MacDevice extends React.Component {
             name: this.props.location.state.name,
             times: [],
             top_val: 10,
+            top_val_cur: 10,
             time_group: "hour",
             _1h_opacity: 1,
             _24h_opacity: 0.5,
@@ -38,20 +40,11 @@ class MacDevice extends React.Component {
         this.handleNameChange = this.handleNameChange.bind(this)
         this.sendNameChange = this.sendNameChange.bind(this)
         this.getData = this.getData.bind(this)
-        this.handleInputChange = this.handleInputChange.bind(this)
-        this.handleSelectTimeChange = this.handleSelectTimeChange.bind(this)
+        this.handleTopVal = this.handleTopVal.bind(this)
     }
 
     componentDidMount() {
         this.getData()
-    }
-
-    handleInputChange(event) {
-        this.setState({top_val: event.target.value}, () => this.getData());
-    }
-
-    handleSelectTimeChange(event){
-        this.setState({time_group: event.target.value}, () => this.getData());
     }
 
     getData() {
@@ -152,6 +145,21 @@ class MacDevice extends React.Component {
             default:
                 break;
         }
+    }
+
+    handleTopVal(event, value){
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
+        this.setState(state => ({
+            top_val_cur: value
+        }));
+        this.timeout = setTimeout(() => {
+            this.setState(state => ({
+                top_val: value
+            })
+            , () => this.getData());
+        }, 500);
     }
 
     render() {
@@ -298,6 +306,35 @@ class MacDevice extends React.Component {
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>
 
+                {/* Samples */}
+                <Grid container item xs={12}>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                    <Grid item xs={12} md={4}>
+                        <Slider
+                            style={{color: 'var(--main-primary-color)', opacity: '0.7'}}
+                            value={this.state.top_val_cur}
+                            valueLabelDisplay="off"
+                            onChange={this.handleTopVal}
+                            min={1}
+                            max={25}
+                            aria-labelledby="discrete-slider-always"
+                        />
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Title PC */}
+                            <div className='TextForm'>
+                                Samples: {this.state.top_val_cur}
+                            </div>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Title Mobile */}
+                            <div className='TextFormMobile'>
+                                Samples: {this.state.top_val_cur}
+                            </div>
+                        </Hidden>
+                    </Grid>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                </Grid>
+
                 {/* Tabble */}
                 <Grid container item xs={12}>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
@@ -339,16 +376,6 @@ class MacDevice extends React.Component {
                     </Grid>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>
-
-                <div>
-                    <input
-                        type="range"
-                        min="1"
-                        max="20"
-                        value={this.state.top_val}
-                        onChange={this.handleInputChange}
-                    />
-                </div>
 
             </Grid>)
     }
