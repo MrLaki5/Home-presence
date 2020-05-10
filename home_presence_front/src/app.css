@@ -64,3 +64,16 @@ body {
 .MuiTableCell-body{
     color: var(--main-bg-color) !important;
 }
+
+/* Input user name style */
+.MuiInputBase-input {
+    color: var(--main-primary-color) !important;
+}
+
+.MuiFormLabel-root.Mui-focused {
+    color: var(--main-primary-color) !important;
+}
+
+.MuiInput-underline:after {
+    border-color: var(--main-primary-color) !important;
+}
