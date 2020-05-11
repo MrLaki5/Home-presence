@@ -170,12 +170,12 @@ class MacDevice extends React.Component {
                 }}/>;
             else {
                 return <Redirect to={{
-                pathname: "/specific_time",
-                state: {
-                    time: this.props.location.state.time_back,
-                    time_group: this.props.location.state.time_group
-                }
-            }}/>;
+                    pathname: "/specific_time",
+                    state: {
+                        time: this.props.location.state.time_back,
+                        time_group: this.props.location.state.time_group
+                    }
+                }}/>;
             }
         }
 
@@ -372,7 +372,7 @@ class MacDevice extends React.Component {
                                 ))}
                                 </TableBody>
                             </Table>
-                            </TableContainer>
+                        </TableContainer>
                     </Grid>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>

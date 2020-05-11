@@ -34,7 +34,7 @@ class Menu_HP extends React.Component {
             case "1":
                 this.setState(state => ({
                     should_redirect: true,
-                    redirect_link: "/"
+                    redirect_link: "/search"
                 }))
                 break;
             case "2":
