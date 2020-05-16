@@ -9,7 +9,7 @@ import datetime
 import logging
 from utils.mac_worker import MacWorker
 from utils.db_worker import DBWorker
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, literal
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -261,6 +261,32 @@ def get_time_for_mac():
     return_message = {
         "status": "success",
         "times": return_nums
+    }
+    response = jsonify(return_message)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    # Get parameters
+    search_name = request.args.get('name')
+    if not search_name:
+        search_name = ""
+
+    return_users = []
+
+    # Get all users filtered by given name
+    if search_name != "":
+        users_db = User.query.filter(User.name.contains(literal(search_name))).all()
+    else:
+        users_db = User.query.all()
+
+    for user_db in users_db:
+        return_users.append({"mac": user_db["mac_address"], "name": user_db["name"]})
+    return_message = {
+        "status": "success",
+        "times": return_users
     }
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")
