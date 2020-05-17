@@ -27,10 +27,12 @@ class SearchDevices extends React.Component {
             go_device: false,
             dev_name: "",
             dev_mac: "",
-            search: ""
+            search: "",
+            search_curr: ""
         };
         this.getData = this.getData.bind(this)
         this.goDevice = this.goDevice.bind(this)
+        this.handleNameChange = this.handleNameChange.bind(this)
     }
 
     componentDidMount() {
@@ -38,7 +40,6 @@ class SearchDevices extends React.Component {
     }
 
     getData() {
-        // TODO: Create api for search devices and implement handler here!
 
         // create a new XMLHttpRequest
         var xhr = new XMLHttpRequest()
@@ -49,14 +50,14 @@ class SearchDevices extends React.Component {
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
             this.setState(state => ({
-                macs: data_obj.mac_logs
+                macs: data_obj.times
             }));
         })
         //var params = "?time=" + this.props.location.state.time + "&time_group=" + this.props.location.state.time_group
-        var params = "?time=11/05/2020, 08:00:00&time_group=hour"
-        //console.log(params)
+        var params = "?name=" + this.state.search
+        console.log(params)
         // open the request with the verb and the url
-        xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/mac_in_time' + params)
+        xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/users' + params)
         // send the request
         xhr.send()
     }
@@ -71,6 +72,22 @@ class SearchDevices extends React.Component {
         }));
     }
 
+    handleNameChange(event) {
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
+        const value = event.target.value || ""
+        this.setState(state => ({
+            search_curr: value
+        }));
+        this.timeout = setTimeout(() => {
+            this.setState(state => ({
+                search: value
+            })
+            , () => this.getData());
+        }, 500);
+    }
+
     render() {
         if (this.state.go_device) {
             return <Redirect to={{
@@ -81,7 +98,7 @@ class SearchDevices extends React.Component {
                 }
             }}/>;
         }
-
+        console.log(this.state.search)
         return  (
             <Grid container className='MainContainer'>
                 
@@ -102,7 +119,8 @@ class SearchDevices extends React.Component {
                             placeholder="Type device MAC"
                             fullWidth
                             margin="normal"
-                            defaultValue={this.state.search}
+                            defaultValue={this.state.search_curr}
+                            onChange={this.handleNameChange}
                             InputLabelProps={{
                                 shrink: true,
                             }}
