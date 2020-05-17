@@ -273,20 +273,33 @@ def get_users():
     search_name = request.args.get('name')
     if not search_name:
         search_name = ""
+    per_page = request.args.get('per_page')
+    try:
+        per_page = int(per_page)
+    except Exception as ex:
+        per_page = 10
+    page_num = request.args.get('page_num')
+    try:
+        page_num = int(page_num)
+    except Exception as ex:
+        page_num = 1
 
     return_users = []
 
     # Get all users filtered by given name
     if search_name != "":
-        users_db = User.query.filter(User.name.contains(literal(search_name))).all()
+        users_db = User.query.filter(User.name.contains(literal(search_name))).paginate(page_num, per_page, False).items
+        users_count = User.query.filter(User.name.contains(literal(search_name))).count()
     else:
-        users_db = User.query.all()
+        users_db = User.query.paginate(page_num, per_page, False).items
+        users_count = User.query.count()
 
     for user_db in users_db:
         return_users.append({"mac": user_db["mac_address"], "name": user_db["name"]})
     return_message = {
         "status": "success",
-        "times": return_users
+        "users": return_users,
+        "count": users_count
     }
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")

@@ -5,6 +5,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
@@ -24,15 +25,20 @@ class SearchDevices extends React.Component {
         super(props);
         this.state = {
             macs: [],
+            all_user_count: 0,
             go_device: false,
             dev_name: "",
             dev_mac: "",
             search: "",
-            search_curr: ""
+            search_curr: "",
+            row_per_page: 10,
+            page_num: 0
         };
         this.getData = this.getData.bind(this)
         this.goDevice = this.goDevice.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
+        this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this)
+        this.handleChangePage = this.handleChangePage.bind(this)
     }
 
     componentDidMount() {
@@ -50,11 +56,12 @@ class SearchDevices extends React.Component {
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
             this.setState(state => ({
-                macs: data_obj.times
+                macs: data_obj.users,
+                all_user_count: data_obj.count
             }));
         })
         //var params = "?time=" + this.props.location.state.time + "&time_group=" + this.props.location.state.time_group
-        var params = "?name=" + this.state.search
+        var params = "?name=" + this.state.search + "&per_page=" + this.state.row_per_page + "&page_num=" + (this.state.page_num + 1)
         console.log(params)
         // open the request with the verb and the url
         xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/users' + params)
@@ -87,6 +94,21 @@ class SearchDevices extends React.Component {
             , () => this.getData());
         }, 500);
     }
+
+    handleChangePage(event, newPage) {
+        this.setState(state => ({
+            page_num: newPage
+        })
+        , () => this.getData());
+    };
+
+    handleChangeRowsPerPage(event){
+        this.setState(state => ({
+            row_per_page: +event.target.value,
+            page_num: 0
+        })
+        , () => this.getData());
+    };
 
     render() {
         if (this.state.go_device) {
@@ -174,7 +196,16 @@ class SearchDevices extends React.Component {
                                 ))}
                                 </TableBody>
                             </Table>
-                            </TableContainer>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 20]}
+                            component="div"
+                            count={this.state.all_user_count}
+                            rowsPerPage={this.state.row_per_page}
+                            page={this.state.page_num}
+                            onChangePage={this.handleChangePage}
+                            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                        />
                     </Grid>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>
