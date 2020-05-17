@@ -166,7 +166,7 @@ class MacDevice extends React.Component {
         if (this.state.go_back) {
             if (!this.props.location.state.time_back)
                 return <Redirect to={{
-                    pathname: "/"
+                    pathname: "/search"
                 }}/>;
             else {
                 return <Redirect to={{
@@ -179,6 +179,11 @@ class MacDevice extends React.Component {
             }
         }
 
+        var current_page_menu = 0
+        if(!this.props.location.state.time_back) {
+            var current_page_menu = 1
+        }
+
         return (
             <Grid container className='MainContainer'>
                 
@@ -187,7 +192,7 @@ class MacDevice extends React.Component {
 
 
                 {/* Menu */}
-                <Menu_HP current_page={0}/> 
+                <Menu_HP current_page={current_page_menu}/>
 
 
                 {/* Back button */}
