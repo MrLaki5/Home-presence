@@ -57,11 +57,21 @@ body {
     color: var(--main-bg-color) !important;
 }
 
+/* Table */
 .MuiTableCell-root {
     border-bottom: 0px !important;
 }
 
-.MuiTableCell-body{
+.MuiTableCell-body {
+    color: var(--main-bg-color) !important;
+}
+
+.MuiTablePagination-toolbar {
+    background-color: var(--main-primary-color) !important;
+    color: var(--main-bg-color) !important;
+}
+
+.MuiSelect-select.MuiSelect-select {
     color: var(--main-bg-color) !important;
 }
 
