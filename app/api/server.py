@@ -215,11 +215,16 @@ def get_mac_in_time():
 @app.route('/time_for_mac', methods=['POST'])
 def get_time_for_mac():
     # Get parameters
-    top_values = request.form.get('top')
+    per_page = request.args.get('per_page')
     try:
-        top_values = int(top_values)
+        per_page = int(per_page)
     except Exception as ex:
-        top_values = 10
+        per_page = 10
+    page_num = request.args.get('page_num')
+    try:
+        page_num = int(page_num)
+    except Exception as ex:
+        page_num = 1
     time_group = request.form.get('time_group')
     time_groups = ["hour", "day", "month", "year"]
     if time_group not in time_groups:
@@ -249,8 +254,16 @@ def get_time_for_mac():
                .order_by(desc(distinct_users.c.curr_time))
                .filter(distinct_users.c.user_uuid == User.uuid)
                .filter(User.mac_address == mac)
-               .limit(top_values)
-               .all())
+               .paginate(page_num, per_page, False).items)
+
+    # Get count for times grouped by time from specific user (filtered by user mac) that are grouped by time and id,
+    # this will give present times for specific user
+    count = (db.session.query(distinct_users.c.curr_time)
+               .group_by(distinct_users.c.curr_time)
+               .order_by(desc(distinct_users.c.curr_time))
+               .filter(distinct_users.c.user_uuid == User.uuid)
+               .filter(User.mac_address == mac)
+               .count())
 
     # Iterate thorough results and put them into json
     tz = pytz.timezone(os.environ['TIMEZONE'])
@@ -260,7 +273,8 @@ def get_time_for_mac():
         return_nums.append({"time": time_curr.strftime("%d/%m/%Y, %H:%M:%S")})
     return_message = {
         "status": "success",
-        "times": return_nums
+        "times": return_nums,
+        "count": count
     }
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")

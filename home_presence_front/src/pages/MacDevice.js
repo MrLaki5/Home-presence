@@ -5,6 +5,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
@@ -28,19 +29,21 @@ class MacDevice extends React.Component {
             go_back: false,
             name: this.props.location.state.name,
             times: [],
-            top_val: 10,
-            top_val_cur: 10,
             time_group: "hour",
             _1h_opacity: 1,
             _24h_opacity: 0.5,
             _1m_opacity: 0.5,
-            _1y_opacity: 0.5
+            _1y_opacity: 0.5,
+            row_per_page: 10,
+            page_num: 0,
+            all_user_count: 0
         };
         this.goBack = this.goBack.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
         this.sendNameChange = this.sendNameChange.bind(this)
         this.getData = this.getData.bind(this)
-        this.handleTopVal = this.handleTopVal.bind(this)
+        this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this)
+        this.handleChangePage = this.handleChangePage.bind(this)
     }
 
     componentDidMount() {
@@ -57,10 +60,11 @@ class MacDevice extends React.Component {
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
             this.setState(state => ({
-                times: data_obj.times
+                times: data_obj.times,
+                all_user_count: data_obj.count
             }));
         })
-        var params = "mac=" + this.props.location.state.mac + "&time_group=" + this.state.time_group + "&top=" + this.state.top_val
+        var params = "mac=" + this.props.location.state.mac + "&time_group=" + this.state.time_group + "&per_page=" + this.state.row_per_page + "&page_num=" + (this.state.page_num + 1)
         console.log(params)
         // open the request with the verb and the url
         xhr.open('POST', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/time_for_mac')
@@ -147,20 +151,20 @@ class MacDevice extends React.Component {
         }
     }
 
-    handleTopVal(event, value){
-        if (this.timeout) {
-            clearTimeout(this.timeout);
-        }
+    handleChangePage(event, newPage) {
         this.setState(state => ({
-            top_val_cur: value
-        }));
-        this.timeout = setTimeout(() => {
-            this.setState(state => ({
-                top_val: value
-            })
-            , () => this.getData());
-        }, 500);
-    }
+            page_num: newPage
+        })
+        , () => this.getData());
+    };
+
+    handleChangeRowsPerPage(event){
+        this.setState(state => ({
+            row_per_page: +event.target.value,
+            page_num: 0
+        })
+        , () => this.getData());
+    };
 
     render() {
         if (this.state.go_back) {
@@ -311,35 +315,6 @@ class MacDevice extends React.Component {
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>
 
-                {/* Samples */}
-                <Grid container item xs={12}>
-                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
-                    <Grid item xs={12} md={4}>
-                        <Slider
-                            style={{color: 'var(--main-primary-color)', opacity: '0.7'}}
-                            value={this.state.top_val_cur}
-                            valueLabelDisplay="off"
-                            onChange={this.handleTopVal}
-                            min={1}
-                            max={25}
-                            aria-labelledby="discrete-slider-always"
-                        />
-                        <Hidden only={['xs', 'sm']}>
-                            {/* Title PC */}
-                            <div className='TextForm'>
-                                Samples: {this.state.top_val_cur}
-                            </div>
-                        </Hidden>
-                        <Hidden only={['md', 'lg', 'xl']}>
-                            {/* Title Mobile */}
-                            <div className='TextFormMobile'>
-                                Samples: {this.state.top_val_cur}
-                            </div>
-                        </Hidden>
-                    </Grid>
-                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
-                </Grid>
-
                 {/* Tabble */}
                 <Grid container item xs={12}>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
@@ -378,6 +353,15 @@ class MacDevice extends React.Component {
                                 </TableBody>
                             </Table>
                         </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 20]}
+                            component="div"
+                            count={this.state.all_user_count}
+                            rowsPerPage={this.state.row_per_page}
+                            page={this.state.page_num}
+                            onChangePage={this.handleChangePage}
+                            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                        />
                     </Grid>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>
