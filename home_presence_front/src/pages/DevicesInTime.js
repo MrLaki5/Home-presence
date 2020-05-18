@@ -5,6 +5,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
@@ -26,11 +27,16 @@ class DevicesInTime extends React.Component {
             go_back: false,
             go_device: false,
             dev_name: "",
-            dev_mac: ""
+            dev_mac: "",
+            row_per_page: 10,
+            page_num: 0,
+            all_device_count: 0
         };
         this.getData = this.getData.bind(this)
         this.goBack = this.goBack.bind(this)
         this.goDevice = this.goDevice.bind(this)
+        this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this)
+        this.handleChangePage = this.handleChangePage.bind(this)
     }
 
     componentDidMount() {
@@ -47,10 +53,11 @@ class DevicesInTime extends React.Component {
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
             this.setState(state => ({
-                macs: data_obj.mac_logs
+                macs: data_obj.mac_logs,
+                all_device_count: data_obj.count
             }));
         })
-        var params = "?time=" + this.props.location.state.time + "&time_group=" + this.props.location.state.time_group
+        var params = "?time=" + this.props.location.state.time + "&time_group=" + this.props.location.state.time_group + "&per_page=" + this.state.row_per_page + "&page_num=" + (this.state.page_num + 1)
         console.log(params)
         // open the request with the verb and the url
         xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/mac_in_time' + params)
@@ -73,6 +80,21 @@ class DevicesInTime extends React.Component {
             dev_mac: dev_mac
         }));
     }
+
+    handleChangePage(event, newPage) {
+        this.setState(state => ({
+            page_num: newPage
+        })
+        , () => this.getData());
+    };
+
+    handleChangeRowsPerPage(event){
+        this.setState(state => ({
+            row_per_page: +event.target.value,
+            page_num: 0
+        })
+        , () => this.getData());
+    };
 
     render() {
         if (this.state.go_back) {
@@ -129,12 +151,12 @@ class DevicesInTime extends React.Component {
                                         <Hidden only={['xs', 'sm']}>
                                             {/* Button PC */}
                                             <TableCell style={{fontSize: "1vw"}}>Time: {this.props.location.state.time_group} [{this.props.location.state.time}]</TableCell>
-                                            <TableCell align="right" style={{fontSize: "1vw"}}>Count: {this.state.macs.length}</TableCell>
+                                            <TableCell align="right" style={{fontSize: "1vw"}}>Count: {this.state.all_device_count}</TableCell>
                                         </Hidden>
                                         <Hidden only={['md', 'lg', 'xl']}>
                                             {/* Button Mobile */}
                                             <TableCell style={{fontSize: "3vw"}}>Time: {this.props.location.state.time_group} [{this.props.location.state.time}]</TableCell>
-                                            <TableCell align="right" style={{fontSize: "3vw"}}>Count: {this.state.macs.length}</TableCell>
+                                            <TableCell align="right" style={{fontSize: "3vw"}}>Count: {this.state.all_device_count}</TableCell>
                                         </Hidden>
                                     </TableRow>
                                     <TableRow>
@@ -175,7 +197,16 @@ class DevicesInTime extends React.Component {
                                 ))}
                                 </TableBody>
                             </Table>
-                            </TableContainer>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 20]}
+                            component="div"
+                            count={this.state.all_device_count}
+                            rowsPerPage={this.state.row_per_page}
+                            page={this.state.page_num}
+                            onChangePage={this.handleChangePage}
+                            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                        />
                     </Grid>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>

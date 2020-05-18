@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.DEBUG)
 def create_app():
     app_inner = Flask(__name__)
     db_yaml = yaml.load(open('db.yaml'), Loader=yaml.FullLoader)
-    app_inner.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://' + db_yaml['user'] + ':' + db_yaml['password'] + '@' +\
+    app_inner.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://' + db_yaml['user'] + ':' + db_yaml['password'] + '@' + \
                                                   db_yaml['host'] + ":" + db_yaml['port'] + "/" + db_yaml['db']
     app_inner.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     model.db.init_app(app_inner)
@@ -133,9 +133,9 @@ def get_mac_num():
 
     # Get users grouped by time and user id
     distinct_users = (db.session.query(
-            func.date_trunc(time_group, LogUser.time).label('curr_time'), LogUser.user_uuid.label('count_inner'))
-            .group_by('curr_time', LogUser.user_uuid)
-            .subquery())
+        func.date_trunc(time_group, LogUser.time).label('curr_time'), LogUser.user_uuid.label('count_inner'))
+                      .group_by('curr_time', LogUser.user_uuid)
+                      .subquery())
 
     # Get users grouped by time from user that are grouped by time and id,
     # this will give count of different users per time
@@ -184,19 +184,34 @@ def get_mac_in_time():
     time_groups = ["hour", "day", "month", "year"]
     if time_group not in time_groups:
         time_group = "hour"
+    per_page = request.args.get('per_page')
+    try:
+        per_page = int(per_page)
+    except Exception as ex:
+        per_page = 10
+    page_num = request.args.get('page_num')
+    try:
+        page_num = int(page_num)
+    except Exception as ex:
+        page_num = 1
 
     return_nums = []
 
     # Get users grouped by time and user id
     distinct_users = (db.session.query(
-            func.date_trunc(time_group, LogUser.time).label('curr_time'), LogUser.user_uuid.label('user_uuid'))
-            .group_by('curr_time', LogUser.user_uuid)
-            .subquery())
+        func.date_trunc(time_group, LogUser.time).label('curr_time'), LogUser.user_uuid.label('user_uuid'))
+                      .group_by('curr_time', LogUser.user_uuid)
+                      .subquery())
 
     # Filter with given time and show user ids
     nums_db = (db.session.query(distinct_users.c.user_uuid)
                .filter(distinct_users.c.curr_time == time)
-               .all())
+               .paginate(page_num, per_page, False).items)
+
+    # Count with given time and show user ids
+    nums_db_count = (db.session.query(distinct_users.c.user_uuid)
+                     .filter(distinct_users.c.curr_time == time)
+                     .count())
 
     # Iterate thorough results and put them into json
     for num_db in nums_db:
@@ -205,7 +220,8 @@ def get_mac_in_time():
         return_nums.append({"mac": curr_mac["mac_address"], "name": curr_mac["name"]})
     return_message = {
         "status": "success",
-        "mac_logs": return_nums
+        "mac_logs": return_nums,
+        "count": nums_db_count
     }
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")
@@ -243,9 +259,9 @@ def get_time_for_mac():
 
     # Get users grouped by time and user id
     distinct_users = (db.session.query(
-            func.date_trunc(time_group, LogUser.time).label('curr_time'), LogUser.user_uuid.label('user_uuid'))
-            .group_by('curr_time', LogUser.user_uuid)
-            .subquery())
+        func.date_trunc(time_group, LogUser.time).label('curr_time'), LogUser.user_uuid.label('user_uuid'))
+                      .group_by('curr_time', LogUser.user_uuid)
+                      .subquery())
 
     # Get times grouped by time from specific user (filtered by user mac) that are grouped by time and id,
     # this will give present times for specific user
@@ -259,11 +275,11 @@ def get_time_for_mac():
     # Get count for times grouped by time from specific user (filtered by user mac) that are grouped by time and id,
     # this will give present times for specific user
     count = (db.session.query(distinct_users.c.curr_time)
-               .group_by(distinct_users.c.curr_time)
-               .order_by(desc(distinct_users.c.curr_time))
-               .filter(distinct_users.c.user_uuid == User.uuid)
-               .filter(User.mac_address == mac)
-               .count())
+             .group_by(distinct_users.c.curr_time)
+             .order_by(desc(distinct_users.c.curr_time))
+             .filter(distinct_users.c.user_uuid == User.uuid)
+             .filter(User.mac_address == mac)
+             .count())
 
     # Iterate thorough results and put them into json
     tz = pytz.timezone(os.environ['TIMEZONE'])
