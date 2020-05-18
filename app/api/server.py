@@ -215,12 +215,12 @@ def get_mac_in_time():
 @app.route('/time_for_mac', methods=['POST'])
 def get_time_for_mac():
     # Get parameters
-    per_page = request.args.get('per_page')
+    per_page = request.form.get('per_page')
     try:
         per_page = int(per_page)
     except Exception as ex:
         per_page = 10
-    page_num = request.args.get('page_num')
+    page_num = request.form.get('page_num')
     try:
         page_num = int(page_num)
     except Exception as ex:
