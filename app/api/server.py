@@ -99,6 +99,14 @@ def status_workers():
     return response, 200
 
 
+@app.route('/settings', methods=['GET', 'POST'])
+def settings_manager():
+    if request.method == 'GET':
+        pass
+    else:
+        data = request.get_json()
+
+
 @app.route('/mac_logs', methods=['GET'])
 def get_mac_logs():
     return_macs = []

@@ -1,11 +1,8 @@
 import re
 import subprocess
-import os
-
-network_mask = os.environ['NETWORK_MASK']
 
 
-def get_active_mac_addresses():
+def get_active_mac_addresses(network_mask):
     # Use arp to get all mac addresses on local network
     addresses = subprocess.check_output(["nmap", "-sn", network_mask])
     # Use regex to extract all mac addresses
