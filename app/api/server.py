@@ -4,11 +4,9 @@ import model
 import pytz
 import os
 from model import LogUser, User, db
-import threading
 import datetime
 import logging
-from utils.mac_worker import MacWorker
-from utils.db_worker import DBWorker
+import utils.workers_manager as workers_manager
 from sqlalchemy import func, desc, literal
 
 logging.basicConfig(level=logging.DEBUG)
@@ -26,11 +24,6 @@ def create_app():
 
 app = create_app()
 
-worker_mac = None
-worker_db = None
-workers_settings = {}
-worker_start_flag = threading.Lock()
-
 
 # Ping method
 @app.route('/ping', methods=['GET'])
@@ -44,21 +37,13 @@ def ping():
 
 @app.route('/workers_start', methods=['GET'])
 def start_workers():
-    global worker_mac, worker_db, workers_settings
     response = {}
-    with worker_start_flag:
-        if (not worker_mac) and (not worker_db):
-            worker_mac = MacWorker(current_app._get_current_object())
-            worker_db = DBWorker(current_app._get_current_object(), worker_mac)
-            worker_mac.set_settings(workers_settings)
-            worker_db.set_settings(workers_settings)
-            worker_mac.start()
-            worker_db.start()
-            response["status"] = "success"
-            response["message"] = "workers started"
-        else:
-            response["status"] = "fail"
-            response["message"] = "workers already started"
+    if workers_manager.start_workers(current_app):
+        response["status"] = "success"
+        response["message"] = "workers started"
+    else:
+        response["status"] = "fail"
+        response["message"] = "workers already started"
     response = jsonify(response)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response, 200
@@ -66,21 +51,13 @@ def start_workers():
 
 @app.route('/workers_stop', methods=['GET'])
 def stop_workers():
-    global worker_mac, worker_db
     response = {}
-    with worker_start_flag:
-        if worker_mac and worker_db:
-            worker_mac.stop_worker()
-            worker_db.stop_worker()
-            worker_mac.join()
-            worker_db.join()
-            worker_mac = None
-            worker_db = None
-            response["status"] = "success"
-            response["message"] = "workers stopped"
-        else:
-            response["status"] = "fail"
-            response["message"] = "workers already stopped"
+    if workers_manager.stop_workers():
+        response["status"] = "success"
+        response["message"] = "workers stopped"
+    else:
+        response["status"] = "fail"
+        response["message"] = "workers already stopped"
     response = jsonify(response)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response, 200
@@ -88,15 +65,13 @@ def stop_workers():
 
 @app.route('/workers_status', methods=['GET'])
 def status_workers():
-    global worker_mac, worker_db
     response = {}
-    with worker_start_flag:
-        if worker_mac and worker_db:
-            response["status"] = "success"
-            response["state"] = "running"
-        else:
-            response["status"] = "success"
-            response["state"] = "stopped"
+    if workers_manager.status_workers():
+        response["status"] = "success"
+        response["state"] = "running"
+    else:
+        response["status"] = "success"
+        response["state"] = "stopped"
     response = jsonify(response)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response, 200
@@ -104,33 +79,19 @@ def status_workers():
 
 @app.route('/settings', methods=['GET', 'POST'])
 def settings_manager():
-    global worker_mac, worker_db, workers_settings
     response = {}
     if request.method == 'GET':
-        get_settings = {}
-        with worker_start_flag:
-            if worker_mac:
-                get_settings = worker_mac.get_settings(get_settings)
-            if worker_db:
-                get_settings = worker_db.get_settings(get_settings)
+        workers_settings = workers_manager.get_settings()
         response["status"] = "success"
-        response["settings"] = get_settings
+        response["settings"] = workers_settings
         response = jsonify(response)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
     else:
         data = request.get_json()
-        get_settings = {}
-        with worker_start_flag:
-            workers_settings = data
-            if worker_mac:
-                worker_mac.set_settings(workers_settings)
-                get_settings = worker_mac.get_settings(get_settings)
-            if worker_db:
-                worker_db.set_settings(workers_settings)
-                get_settings = worker_db.get_settings(get_settings)
+        workers_settings = workers_manager.set_settings(data)
         response["status"] = "success"
-        response["settings"] = get_settings
+        response["settings"] = workers_settings
         response = jsonify(response)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
