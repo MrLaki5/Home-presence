@@ -12,6 +12,17 @@ class DBWorker(threading.Thread):
         self.mac_worker = mac_worker
         self.sleep_time = int(os.environ['WORKER_DB_SLEEP_TIME_S'])
         self.wait_event = threading.Event()
+        self.setting_data_lock = threading.Lock()
+
+    def set_settings(self, settings):
+        with self.setting_data_lock:
+            if ("sleep_time_db" in settings) and (isinstance(settings["sleep_time_db"], int)):
+                self.sleep_time = settings["sleep_time_db"]
+
+    def get_settings(self, return_settings):
+        with self.setting_data_lock:
+            return_settings["sleep_time_db"] = self.sleep_time
+        return return_settings
 
     def stop_worker(self):
         self.wait_event.set()

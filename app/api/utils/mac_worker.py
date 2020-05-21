@@ -22,15 +22,15 @@ class MacWorker(threading.Thread):
         with self.setting_data_lock:
             if ("max_miss_count" in settings) and (isinstance(settings["max_miss_count"], int)):
                 self.max_miss_count = settings["max_miss_count"]
-            if ("sleep_time" in settings) and (isinstance(settings["sleep_time"], int)):
-                self.sleep_time = settings["sleep_time"]
+            if ("sleep_time_mac" in settings) and (isinstance(settings["sleep_time_mac"], int)):
+                self.sleep_time = settings["sleep_time_mac"]
             if ("network_mask" in settings) and (isinstance(settings["network_mask"], str)):
                 self.network_mask = settings["network_mask"]
 
     def get_settings(self, return_settings):
         with self.setting_data_lock:
             return_settings["max_miss_count"] = self.max_miss_count
-            return_settings["sleep_time"] = self.sleep_time
+            return_settings["sleep_time_mac"] = self.sleep_time
             return_settings["network_mask"] = self.network_mask
         return return_settings
 

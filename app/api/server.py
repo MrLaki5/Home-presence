@@ -28,6 +28,7 @@ app = create_app()
 
 worker_mac = None
 worker_db = None
+workers_settings = {}
 worker_start_flag = threading.Lock()
 
 
@@ -43,12 +44,14 @@ def ping():
 
 @app.route('/workers_start', methods=['GET'])
 def start_workers():
-    global worker_mac, worker_db
+    global worker_mac, worker_db, workers_settings
     response = {}
     with worker_start_flag:
         if (not worker_mac) and (not worker_db):
             worker_mac = MacWorker(current_app._get_current_object())
             worker_db = DBWorker(current_app._get_current_object(), worker_mac)
+            worker_mac.set_settings(workers_settings)
+            worker_db.set_settings(workers_settings)
             worker_mac.start()
             worker_db.start()
             response["status"] = "success"
@@ -101,10 +104,36 @@ def status_workers():
 
 @app.route('/settings', methods=['GET', 'POST'])
 def settings_manager():
+    global worker_mac, worker_db, workers_settings
+    response = {}
     if request.method == 'GET':
-        pass
+        get_settings = {}
+        with worker_start_flag:
+            if worker_mac:
+                get_settings = worker_mac.get_settings(get_settings)
+            if worker_db:
+                get_settings = worker_db.get_settings(get_settings)
+        response["status"] = "success"
+        response["settings"] = get_settings
+        response = jsonify(response)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response, 200
     else:
         data = request.get_json()
+        get_settings = {}
+        with worker_start_flag:
+            workers_settings = data
+            if worker_mac:
+                worker_mac.set_settings(workers_settings)
+                get_settings = worker_mac.get_settings(get_settings)
+            if worker_db:
+                worker_db.set_settings(workers_settings)
+                get_settings = worker_db.get_settings(get_settings)
+        response["status"] = "success"
+        response["settings"] = get_settings
+        response = jsonify(response)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response, 200
 
 
 @app.route('/mac_logs', methods=['GET'])
