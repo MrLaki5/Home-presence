@@ -15,14 +15,20 @@ class MacDevice extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            worker_status: false
+            worker_status: false,
+            sleep_time_db: 0,
+            network_mask: "",
+            sleep_time_mac: 0,
+            max_miss_count: 0
         };
         this.checkWorkerStatus = this.checkWorkerStatus.bind(this)
         this.sendWorkerChange = this.sendWorkerChange.bind(this)
+        this.checkSettings = this.checkSettings.bind(this)
     }
 
     componentDidMount() {
         this.checkWorkerStatus()
+        this.checkSettings()
     }
 
     checkWorkerStatus() {
@@ -47,6 +53,30 @@ class MacDevice extends React.Component {
         })
         // open the request with the verb and the url
         xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/workers_status')
+        // send the request
+        xhr.send()
+    }
+
+    checkSettings() {
+        // create a new XMLHttpRequest
+        var xhr = new XMLHttpRequest()
+
+        // get a callback when the server responds
+        xhr.addEventListener('load', () => {
+            // update the state of the component with the result here
+            console.log(xhr.responseText)
+            var data_obj = JSON.parse(xhr.responseText);
+            this.setState(state => ({
+            
+                sleep_time_db: data_obj["sleep_time_db"],
+                network_mask: data_obj["network_mask"],
+                sleep_time_mac: data_obj["sleep_time_mac"],
+                max_miss_count: data_obj["max_miss_count"]
+            }));
+
+        })
+        // open the request with the verb and the url
+        xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/settings')
         // send the request
         xhr.send()
     }
