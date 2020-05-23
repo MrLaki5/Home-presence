@@ -9,6 +9,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Hidden from '@material-ui/core/Hidden';
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 
 class MacDevice extends React.Component {
@@ -29,6 +30,7 @@ class MacDevice extends React.Component {
         this.handleMissCounterChange = this.handleMissCounterChange.bind(this)
         this.handleSleepTimeMacChange = this.handleSleepTimeMacChange.bind(this)
         this.handleSleepTimeDBChange = this.handleSleepTimeDBChange.bind(this)
+        this.sendSettings = this.sendSettings.bind(this)
     }
 
     componentDidMount() {
@@ -86,6 +88,39 @@ class MacDevice extends React.Component {
         xhr.send()
     }
 
+    sendSettings() {
+        // create a new XMLHttpRequest
+        var xhr = new XMLHttpRequest()
+
+        // get a callback when the server responds
+        xhr.addEventListener('load', () => {
+            // update the state of the component with the result here
+            console.log(xhr.responseText)
+            var data_obj = JSON.parse(xhr.responseText);
+            data_obj = data_obj["settings"]
+            this.setState(state => ({
+                sleep_time_db: data_obj["sleep_time_db"],
+                network_mask: data_obj["network_mask"],
+                sleep_time_mac: data_obj["sleep_time_mac"],
+                max_miss_count: data_obj["max_miss_count"]
+            }));
+
+        })
+
+        const json_data = {
+            "sleep_time_db": this.state.sleep_time_db,
+            "network_mask": this.state.network_mask,
+            "sleep_time_mac": this.state.sleep_time_mac,
+            "max_miss_count": this.state.max_miss_count
+        }
+
+        // open the request with the verb and the url
+        xhr.open('POST', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/settings')
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        // send the request
+        xhr.send(JSON.stringify(json_data))
+    }
+
     sendWorkerChange(event) {
         // create a new XMLHttpRequest
         var xhr = new XMLHttpRequest()
@@ -130,21 +165,21 @@ class MacDevice extends React.Component {
     handleMissCounterChange(event) {
         const value = event.target.value || ""
         this.setState(state => ({
-            max_miss_count: value
+            max_miss_count: Number(value)
         }));
     }
 
     handleSleepTimeMacChange(event) {
         const value = event.target.value || ""
         this.setState(state => ({
-            sleep_time_mac: value
+            sleep_time_mac: Number(value)
         }));
     }
 
     handleSleepTimeDBChange(event) {
         const value = event.target.value || ""
         this.setState(state => ({
-            sleep_time_db: value
+            sleep_time_db: Number(value)
         }));
     }
 
@@ -275,6 +310,20 @@ class MacDevice extends React.Component {
                             shrink: true,
                         }}
                     />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* Save button */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Button PC */}
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} onClick={ () => this.sendSettings()}>Save</Button>
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Button Mobile */}
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} onClick={ () => this.sendSettings()}>Save</Button>
+                    </Hidden>
                 </Grid>
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
             </Grid>

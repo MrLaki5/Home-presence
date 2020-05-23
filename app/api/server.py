@@ -77,7 +77,7 @@ def status_workers():
     return response, 200
 
 
-@app.route('/settings', methods=['GET', 'POST'])
+@app.route('/settings', methods=['GET', 'POST', 'OPTIONS'])
 def settings_manager():
     response = {}
     if request.method == 'GET':
@@ -87,8 +87,15 @@ def settings_manager():
         response = jsonify(response)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
+    elif request.method == 'OPTIONS':
+        response = jsonify({'Allow': 'GET,POST'})
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add('Access-Control-Allow-Methods', 'POST,GET')
+        response.headers.add('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-Type, Accept")
+        return response, 200
     else:
         data = request.get_json()
+        print(str(data))
         workers_settings = workers_manager.set_settings(data)
         response["status"] = "success"
         response["settings"] = workers_settings
