@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Hidden from '@material-ui/core/Hidden';
+import TextField from '@material-ui/core/TextField';
 
 
 class MacDevice extends React.Component {
@@ -24,6 +25,10 @@ class MacDevice extends React.Component {
         this.checkWorkerStatus = this.checkWorkerStatus.bind(this)
         this.sendWorkerChange = this.sendWorkerChange.bind(this)
         this.checkSettings = this.checkSettings.bind(this)
+        this.handleNetworkMaskChange = this.handleNetworkMaskChange.bind(this)
+        this.handleMissCounterChange = this.handleMissCounterChange.bind(this)
+        this.handleSleepTimeMacChange = this.handleSleepTimeMacChange.bind(this)
+        this.handleSleepTimeDBChange = this.handleSleepTimeDBChange.bind(this)
     }
 
     componentDidMount() {
@@ -66,8 +71,8 @@ class MacDevice extends React.Component {
             // update the state of the component with the result here
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
+            data_obj = data_obj["settings"]
             this.setState(state => ({
-            
                 sleep_time_db: data_obj["sleep_time_db"],
                 network_mask: data_obj["network_mask"],
                 sleep_time_mac: data_obj["sleep_time_mac"],
@@ -115,54 +120,165 @@ class MacDevice extends React.Component {
         xhr.send()
     }
 
+    handleNetworkMaskChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            network_mask: value
+        }));
+    }
+
+    handleMissCounterChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            max_miss_count: value
+        }));
+    }
+
+    handleSleepTimeMacChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            sleep_time_mac: value
+        }));
+    }
+
+    handleSleepTimeDBChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            sleep_time_db: value
+        }));
+    }
+
     render() {
+        console.log("Network mask: " + this.state.network_mask)
         return  <Grid container className='MainContainer'>
+            {/* Title */}
+            <Title_HP/>
 
-                    {/* Title */}
-                    <Title_HP/>
+            {/* Menu */}
+            <Menu_HP current_page={2}/>
 
-
-                    {/* Menu */}
-                    <Menu_HP current_page={2}/>
-
-
-                    <Grid item xs={12}>
-                        <Hidden only={['xs', 'sm']}>
-                            {/* Button PC */}
-                            <FormControlLabel
-                                style={{color: 'var(--main-primary-color)', fontSize: '1.5vw'}}
-                                control={
-                                    <Switch
-                                        style={{color: 'var(--main-primary-color)'}}
-                                        checked={this.state.worker_status}
-                                        onChange={this.sendWorkerChange}
-                                        value="checkedB"
-                                        color="secondary"
-                                    />
-                                }
-                                label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
-                            />
-                        </Hidden>
-                        <Hidden only={['md', 'lg', 'xl']}>
-                            {/* Button Mobile */}
-                            <FormControlLabel
-                                style={{color: 'var(--main-primary-color)', fontSize: '3vw'}}
-                                control={
-                                    <Switch
-                                        style={{color: 'var(--main-primary-color)'}}
-                                        checked={this.state.worker_status}
-                                        onChange={this.sendWorkerChange}
-                                        value="checkedB"
-                                        color="secondary"
-                                    />
-                                }
-                                label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
-                            />
-                        </Hidden>
-
-                    </Grid>
-
+            {/* Workers status slider */}
+            <Grid container item xs={12} >
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Button PC */}
+                        <FormControlLabel
+                            style={{color: 'var(--main-primary-color)', fontSize: '1.5vw'}}
+                            control={
+                                <Switch
+                                    style={{color: 'var(--main-primary-color)'}}
+                                    checked={this.state.worker_status}
+                                    onChange={this.sendWorkerChange}
+                                    value="checkedB"
+                                    color="secondary"
+                                />
+                            }
+                            label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
+                        />
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Button Mobile */}
+                        <FormControlLabel
+                            style={{color: 'var(--main-primary-color)', fontSize: '3vw'}}
+                            control={
+                                <Switch
+                                    style={{color: 'var(--main-primary-color)'}}
+                                    checked={this.state.worker_status}
+                                    onChange={this.sendWorkerChange}
+                                    value="checkedB"
+                                    color="secondary"
+                                />
+                            }
+                            label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
+                        />
+                    </Hidden>
                 </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+            </Grid>
+
+            {/* Settings part */}
+            <Grid container item xs={12}>
+                {/* Network mask */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="Network mask"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="Network mask"
+                        fullWidth
+                        margin="normal"
+                        onChange={this.handleNetworkMaskChange}
+                        value={this.state.network_mask}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* Miss counter mac */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="MAC miss threshold"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="MAC miss threshold"
+                        fullWidth
+                        margin="normal"
+                        type="number"
+                        onChange={this.handleMissCounterChange}
+                        value={this.state.max_miss_count}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* MAC worker sleep time */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="MAC worker sleep time (s)"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="MAC worker sleep time (s)"
+                        fullWidth
+                        margin="normal"
+                        type="number"
+                        onChange={this.handleSleepTimeMacChange}
+                        value={this.state.sleep_time_mac}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* DB worker sleep time */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="Save worker sleep time (s)"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="Save worker sleep time (s)"
+                        fullWidth
+                        margin="normal"
+                        type="number"
+                        onChange={this.handleSleepTimeDBChange}
+                        value={this.state.sleep_time_db}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+            </Grid>
+        </Grid>
     }
 }
 

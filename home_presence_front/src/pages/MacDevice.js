@@ -112,6 +112,7 @@ class MacDevice extends React.Component {
                     _24h_opacity: 0.5,
                     _1m_opacity: 0.5,
                     _1y_opacity: 0.5,
+                    page_num: 0,
                     time_group: "hour"
                 })
                 , () => this.getData());
@@ -122,6 +123,7 @@ class MacDevice extends React.Component {
                     _24h_opacity: 1,
                     _1m_opacity: 0.5,
                     _1y_opacity: 0.5,
+                    page_num: 0,
                     time_group: "day"
                 })
                 , () => this.getData());
@@ -132,6 +134,7 @@ class MacDevice extends React.Component {
                     _24h_opacity: 0.5,
                     _1m_opacity: 1,
                     _1y_opacity: 0.5,
+                    page_num: 0,
                     time_group: "month"
                 })
                 , () => this.getData());
@@ -142,6 +145,7 @@ class MacDevice extends React.Component {
                     _24h_opacity: 0.5,
                     _1m_opacity: 0.5,
                     _1y_opacity: 1,
+                    page_num: 0,
                     time_group: "year"
                 })
                 , () => this.getData());
