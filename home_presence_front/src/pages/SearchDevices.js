@@ -136,9 +136,9 @@ class SearchDevices extends React.Component {
                     <Grid item xs={12} md={4}>
                         <TextField
                             id="standard-full-width"
-                            label="MAC"
+                            label="USer"
                             style={{color: "var(--main-primary-color)" }}
-                            placeholder="Type device MAC"
+                            placeholder="Type part of username"
                             fullWidth
                             margin="normal"
                             defaultValue={this.state.search_curr}

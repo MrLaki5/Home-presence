@@ -192,48 +192,8 @@ class MacDevice extends React.Component {
             {/* Menu */}
             <Menu_HP current_page={2}/>
 
-            {/* Workers status slider */}
-            <Grid container item xs={12} >
-                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
-                <Grid item xs={12} md={4}>
-                    <Hidden only={['xs', 'sm']}>
-                        {/* Button PC */}
-                        <FormControlLabel
-                            style={{color: 'var(--main-primary-color)', fontSize: '1.5vw'}}
-                            control={
-                                <Switch
-                                    style={{color: 'var(--main-primary-color)'}}
-                                    checked={this.state.worker_status}
-                                    onChange={this.sendWorkerChange}
-                                    value="checkedB"
-                                    color="secondary"
-                                />
-                            }
-                            label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
-                        />
-                    </Hidden>
-                    <Hidden only={['md', 'lg', 'xl']}>
-                        {/* Button Mobile */}
-                        <FormControlLabel
-                            style={{color: 'var(--main-primary-color)', fontSize: '3vw'}}
-                            control={
-                                <Switch
-                                    style={{color: 'var(--main-primary-color)'}}
-                                    checked={this.state.worker_status}
-                                    onChange={this.sendWorkerChange}
-                                    value="checkedB"
-                                    color="secondary"
-                                />
-                            }
-                            label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
-                        />
-                    </Hidden>
-                </Grid>
-                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
-            </Grid>
-
             {/* Settings part */}
-            <Grid container item xs={12}>
+            <Grid container item xs={12} style={{marginBottom: '3%'}}>
                 {/* Network mask */}
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 <Grid item xs={12} md={4}>
@@ -323,6 +283,46 @@ class MacDevice extends React.Component {
                     <Hidden only={['md', 'lg', 'xl']}>
                         {/* Button Mobile */}
                         <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} onClick={ () => this.sendSettings()}>Save</Button>
+                    </Hidden>
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+            </Grid>
+
+            {/* Workers status slider */}
+            <Grid container item xs={12} >
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Button PC */}
+                        <FormControlLabel
+                            style={{color: 'var(--main-primary-color)', fontSize: '1.5vw'}}
+                            control={
+                                <Switch
+                                    style={{color: 'var(--main-primary-color)'}}
+                                    checked={this.state.worker_status}
+                                    onChange={this.sendWorkerChange}
+                                    value="checkedB"
+                                    color="secondary"
+                                />
+                            }
+                            label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
+                        />
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Button Mobile */}
+                        <FormControlLabel
+                            style={{color: 'var(--main-primary-color)', fontSize: '3vw'}}
+                            control={
+                                <Switch
+                                    style={{color: 'var(--main-primary-color)'}}
+                                    checked={this.state.worker_status}
+                                    onChange={this.sendWorkerChange}
+                                    value="checkedB"
+                                    color="secondary"
+                                />
+                            }
+                            label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
+                        />
                     </Hidden>
                 </Grid>
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
