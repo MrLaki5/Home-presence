@@ -23,6 +23,21 @@ body {
     text-align: center;
 }
 
+.VersionContainer {
+    text-align: left;
+    color: var(--main-primary-color);
+}
+
+.TitleVersion {
+    font-family: 'Collegia';
+    font-size: 0.9vw;
+}
+
+.TitleVersionMobile {
+    font-family: 'Collegia';
+    font-size: 2.5vw;
+}
+
 .Title {
     cursor: pointer;
     font-family: 'Collegia';
