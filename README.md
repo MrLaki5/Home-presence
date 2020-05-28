@@ -1,4 +1,9 @@
-## Home presence
+<p align="center">
+    <img src="img/logo.png" width="200"/>
+    <br/>
+    <b>Network activity diagnostic tool</b>
+    <br/>
+</p>
 
 * Hardware platform: <b>Raspberry Pi</b>
 * Virtualisation: <b>Docker containers</b>
