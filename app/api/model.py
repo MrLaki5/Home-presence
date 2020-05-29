@@ -14,6 +14,34 @@ def function_now():
     return datetime.now(tz)
 
 
+class AppUser(db.Model):
+
+    __tablename__ = 'app_user'
+    uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    password = db.Column(db.String(127), default="", nullable=False)
+    auth_token = db.Column(db.String(127), default="", nullable=False)
+
+    def __init__(self, password, auth_token=""):
+        self.password = password
+        self.auth_token = auth_token
+
+    def update(self, data):
+        data.pop('uuid')
+        for key, value in data.items():
+            setattr(self, key, value)
+        db.session.commit()
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        return setattr(self, key, value)
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
 class User(db.Model):
 
     __tablename__ = 'user'

@@ -1,7 +1,7 @@
 from flask.cli import FlaskGroup
 from model import db
 from server import create_app
-from model import User, LogUser
+from model import User, LogUser, AppUser
 import pytz
 import os
 
@@ -17,8 +17,9 @@ def recreate_db():
 
 @cli.command()
 def seed_db():
-    print("test123")
-    pass
+    app_user = AppUser(password="home-presence")
+    db.session.add(app_user)
+    db.session.commit()
 
 
 @cli.command()
