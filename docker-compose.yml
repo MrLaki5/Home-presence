@@ -25,6 +25,7 @@ services:
      - WORKER_MAC_SLEEP_TIME_S=150
      - WORKER_DB_SLEEP_TIME_S=600
      - TIMEZONE=Europe/Belgrade
+     - SECRET_KEY=Random_secret_key123
     ports:
      - 8080:8080
     network_mode: host
