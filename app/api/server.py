@@ -8,6 +8,7 @@ import datetime
 import logging
 import utils.workers_manager as workers_manager
 from sqlalchemy import func, desc, literal
+from authentication import authentication
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -27,6 +28,7 @@ app = create_app()
 
 # Ping method
 @app.route('/ping', methods=['GET'])
+@authentication
 def ping():
     app.logger.debug("Ping!")
     response = {}

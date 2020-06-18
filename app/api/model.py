@@ -19,11 +19,11 @@ class AppUser(db.Model):
     __tablename__ = 'app_user'
     uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     password = db.Column(db.String(127), default="", nullable=False)
-    auth_token = db.Column(db.String(127), default="", nullable=False)
+    auth_time = db.Column(DateTime, default=function_now)
 
-    def __init__(self, password, auth_token=""):
+    def __init__(self, password, auth_time=""):
         self.password = password
-        self.auth_token = auth_token
+        self.auth_time = auth_time
 
     def update(self, data):
         data.pop('uuid')

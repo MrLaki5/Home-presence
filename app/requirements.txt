@@ -3,3 +3,4 @@ Flask-SQLAlchemy==2.3.2
 pyyaml==5.1
 psycopg2-binary==2.8.2
 pytz==2019.3
+jwt==1.0.0
