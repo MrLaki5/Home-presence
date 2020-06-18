@@ -3,10 +3,11 @@ import yaml
 import model
 import pytz
 import os
-from model import LogUser, User, db
+from model import LogUser, User, db, AppUser, function_now
 import datetime
 import logging
 import utils.workers_manager as workers_manager
+from utils.token_manager import encode_auth_token
 from sqlalchemy import func, desc, literal
 from authentication import authentication
 
@@ -37,7 +38,41 @@ def ping():
     return jsonify(response), 200
 
 
+@app.route('/login', methods=['POST'])
+def login():
+    password = request.form.get('password')
+    response = {}
+    if not password or password == "":
+        response["status"] = "fail"
+        response["message"] = "Invalid payload"
+        response = jsonify(response)
+        return response, 200
+    user = AppUser.query.filter_by(password=password).first()
+    if user:
+        time_login = function_now()
+        time_curr = time_login.strftime("%d/%m/%Y, %H:%M:%S")
+        user["auth_time"] = time_login
+        auth_token = encode_auth_token(str(user["uuid"]), time_curr)
+        if auth_token:
+            response["status"] = "success"
+            response["message"] = "Login successful"
+            response["auth_token"] = auth_token.decode("utf-8")
+            response = jsonify(response)
+            return response, 200
+        else:
+            response["status"] = "fail"
+            response["message"] = "Error creating auth token"
+            response = jsonify(response)
+            return response, 401
+    else:
+        response["status"] = "fail"
+        response["message"] = "Wrong password"
+        response = jsonify(response)
+        return response, 200
+
+
 @app.route('/workers_start', methods=['GET'])
+@authentication
 def start_workers():
     response = {}
     if workers_manager.start_workers(current_app):
@@ -52,6 +87,7 @@ def start_workers():
 
 
 @app.route('/workers_stop', methods=['GET'])
+@authentication
 def stop_workers():
     response = {}
     if workers_manager.stop_workers():
@@ -66,6 +102,7 @@ def stop_workers():
 
 
 @app.route('/workers_status', methods=['GET'])
+@authentication
 def status_workers():
     response = {}
     if workers_manager.status_workers():
@@ -80,6 +117,7 @@ def status_workers():
 
 
 @app.route('/settings', methods=['GET', 'POST', 'OPTIONS'])
+@authentication
 def settings_manager():
     response = {}
     if request.method == 'GET':
@@ -107,6 +145,7 @@ def settings_manager():
 
 
 @app.route('/mac_logs', methods=['GET'])
+@authentication
 def get_mac_logs():
     return_macs = []
     macs_db = LogUser.query.limit(5).all()
@@ -124,6 +163,7 @@ def get_mac_logs():
 
 
 @app.route('/num_logs', methods=['GET'])
+@authentication
 def get_mac_num():
     # Get parameters
     top_values = request.args.get('top')
@@ -168,6 +208,7 @@ def get_mac_num():
 
 
 @app.route('/mac_in_time', methods=['GET'])
+@authentication
 def get_mac_in_time():
     # Get parameters
     try:
@@ -236,6 +277,7 @@ def get_mac_in_time():
 
 
 @app.route('/time_for_mac', methods=['POST'])
+@authentication
 def get_time_for_mac():
     # Get parameters
     per_page = request.form.get('per_page')
@@ -253,7 +295,7 @@ def get_time_for_mac():
     if time_group not in time_groups:
         time_group = "hour"
     mac = request.form.get("mac")
-    if not mac or mac is "":
+    if not mac or mac == "":
         return_message = {
             "status": "fail",
             "mac_logs": "bad payload"
@@ -305,6 +347,7 @@ def get_time_for_mac():
 
 
 @app.route('/users', methods=['GET'])
+@authentication
 def get_users():
     # Get parameters
     search_name = request.args.get('name')
@@ -344,6 +387,7 @@ def get_users():
 
 
 @app.route('/change_name', methods=['POST'])
+@authentication
 def change_name():
     new_name = request.form.get("name")
     mac = request.form.get("mac")

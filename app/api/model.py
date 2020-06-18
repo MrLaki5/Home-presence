@@ -21,7 +21,7 @@ class AppUser(db.Model):
     password = db.Column(db.String(127), default="", nullable=False)
     auth_time = db.Column(DateTime, default=function_now)
 
-    def __init__(self, password, auth_time=""):
+    def __init__(self, password, auth_time=function_now()):
         self.password = password
         self.auth_time = auth_time
 

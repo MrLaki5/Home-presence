@@ -14,7 +14,6 @@ def authentication(f):
         response["message"] = "Auth token not provided"
         # Get token
         authentication_header = request.headers.get('Authorization')
-        print("DEBUG: token: " + authentication_header)
         if not authentication_header:
             return jsonify(response), 403
         token_pars = authentication_header.split(" ")
@@ -37,6 +36,7 @@ def authentication(f):
         # Check if token is expired
         tz = pytz.timezone(os.environ['TIMEZONE'])
         time_curr = pytz.utc.localize(user["auth_time"], is_dst=None).astimezone(tz)
+        time_curr = time_curr.strftime("%d/%m/%Y, %H:%M:%S")
         if time_curr == decoded_payload["iat"]:
             response["status"] = "success"
             response["message"] = "User authenticated"

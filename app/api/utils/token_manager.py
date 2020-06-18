@@ -2,7 +2,7 @@ import jwt
 import os
 
 
-def encode_auth_token(self, user_uuid, time_stamp):
+def encode_auth_token(user_uuid, time_stamp):
     try:
         payload = {
             'iat': time_stamp,
@@ -14,7 +14,8 @@ def encode_auth_token(self, user_uuid, time_stamp):
             algorithm='HS256'
         )
     except Exception as e:
-        return e
+        print(str(e))
+        return None
 
 
 def decode_auth_token(auth_token):
