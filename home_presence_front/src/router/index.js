@@ -4,6 +4,7 @@ import AllDevicesTimeGraph from '../pages/AllDevicesTimeGraph';
 import DevicesInTime from '../pages/DevicesInTime';
 import MacDevice from '../pages/MacDevice'
 import Settings from '../pages/Settings'
+import Login from '../pages/Login'
 import Search from '../pages/SearchDevices'
 
 const my_router = (<Router>
@@ -13,6 +14,7 @@ const my_router = (<Router>
                             <Route exact path="/mac_device" component={MacDevice} />
                             <Route exact path="/settings" component={Settings} />
                             <Route exact path="/search" component={Search} />
+                            <Route exact path="/login" component={Login} />
                         </Switch>
                     </Router>
                     )
