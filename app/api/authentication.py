@@ -37,7 +37,7 @@ def authentication(f):
         tz = pytz.timezone(os.environ['TIMEZONE'])
         time_curr = pytz.utc.localize(user["auth_time"], is_dst=None).astimezone(tz)
         time_curr = time_curr.strftime("%d/%m/%Y, %H:%M:%S")
-        if time_curr == decoded_payload["iat"]:
+        if time_curr == decoded_payload["time"]:
             response["status"] = "success"
             response["message"] = "User authenticated"
             return f(jsonify(response), *args, **kwargs)

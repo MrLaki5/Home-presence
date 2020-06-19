@@ -30,7 +30,7 @@ app = create_app()
 # Ping method
 @app.route('/ping', methods=['GET'])
 @authentication
-def ping():
+def ping(resp):
     app.logger.debug("Ping!")
     response = {}
     response["status"] = "success"
@@ -52,6 +52,7 @@ def login():
         time_login = function_now()
         time_curr = time_login.strftime("%d/%m/%Y, %H:%M:%S")
         user["auth_time"] = time_login
+        db.session.commit()
         auth_token = encode_auth_token(str(user["uuid"]), time_curr)
         if auth_token:
             response["status"] = "success"
@@ -73,7 +74,7 @@ def login():
 
 @app.route('/workers_start', methods=['GET'])
 @authentication
-def start_workers():
+def start_workers(resp):
     response = {}
     if workers_manager.start_workers(current_app):
         response["status"] = "success"
@@ -88,7 +89,7 @@ def start_workers():
 
 @app.route('/workers_stop', methods=['GET'])
 @authentication
-def stop_workers():
+def stop_workers(resp):
     response = {}
     if workers_manager.stop_workers():
         response["status"] = "success"
@@ -103,7 +104,7 @@ def stop_workers():
 
 @app.route('/workers_status', methods=['GET'])
 @authentication
-def status_workers():
+def status_workers(resp):
     response = {}
     if workers_manager.status_workers():
         response["status"] = "success"
@@ -118,7 +119,7 @@ def status_workers():
 
 @app.route('/settings', methods=['GET', 'POST', 'OPTIONS'])
 @authentication
-def settings_manager():
+def settings_manager(resp):
     response = {}
     if request.method == 'GET':
         workers_settings = workers_manager.get_settings()
@@ -135,7 +136,6 @@ def settings_manager():
         return response, 200
     else:
         data = request.get_json()
-        print(str(data))
         workers_settings = workers_manager.set_settings(data)
         response["status"] = "success"
         response["settings"] = workers_settings
@@ -146,13 +146,15 @@ def settings_manager():
 
 @app.route('/mac_logs', methods=['GET'])
 @authentication
-def get_mac_logs():
+def get_mac_logs(resp):
     return_macs = []
     macs_db = LogUser.query.limit(5).all()
+    tz = pytz.timezone(os.environ['TIMEZONE'])
     for mac_db in macs_db:
         curr_mac = User.query.filter_by(uuid=mac_db["user_uuid"]).first()
         if curr_mac:
-            return_macs.append({"mac": curr_mac["mac_address"], "time": str(mac_db["time"])})
+            time_curr = pytz.utc.localize(mac_db["time"], is_dst=None).astimezone(tz)
+            return_macs.append({"mac": curr_mac["mac_address"], "time": time_curr.strftime("%d/%m/%Y, %H:%M:%S")})
     return_message = {
         "status": "success",
         "mac_logs": return_macs
@@ -164,7 +166,7 @@ def get_mac_logs():
 
 @app.route('/num_logs', methods=['GET'])
 @authentication
-def get_mac_num():
+def get_mac_num(resp):
     # Get parameters
     top_values = request.args.get('top')
     try:
@@ -209,7 +211,7 @@ def get_mac_num():
 
 @app.route('/mac_in_time', methods=['GET'])
 @authentication
-def get_mac_in_time():
+def get_mac_in_time(resp):
     # Get parameters
     try:
         # Convert time from local timezone to UTC (db is in UTC)
@@ -278,7 +280,7 @@ def get_mac_in_time():
 
 @app.route('/time_for_mac', methods=['POST'])
 @authentication
-def get_time_for_mac():
+def get_time_for_mac(resp):
     # Get parameters
     per_page = request.form.get('per_page')
     try:
@@ -348,7 +350,7 @@ def get_time_for_mac():
 
 @app.route('/users', methods=['GET'])
 @authentication
-def get_users():
+def get_users(resp):
     # Get parameters
     search_name = request.args.get('name')
     if not search_name:
@@ -388,7 +390,7 @@ def get_users():
 
 @app.route('/change_name', methods=['POST'])
 @authentication
-def change_name():
+def change_name(resp):
     new_name = request.form.get("name")
     mac = request.form.get("mac")
     if mac and new_name and new_name != "":

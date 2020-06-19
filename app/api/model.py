@@ -11,6 +11,7 @@ tz = pytz.timezone(os.environ['TIMEZONE'])
 
 
 def function_now():
+    global tz
     return datetime.now(tz)
 
 
