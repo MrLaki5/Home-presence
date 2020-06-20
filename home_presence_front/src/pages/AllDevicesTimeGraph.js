@@ -25,7 +25,8 @@ class App extends React.Component {
             _1h_opacity: 1,
             _24h_opacity: 0.5,
             _1m_opacity: 0.5,
-            _1y_opacity: 0.5
+            _1y_opacity: 0.5,
+            login_required: false
         };
         this.getData = this.getData.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
@@ -48,14 +49,26 @@ class App extends React.Component {
             // update the state of the component with the result here
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
-            this.setState(state => ({
-                devices: data_obj.mac_logs
-            }));
+            if (data_obj["status"] === "success"){
+                if (data_obj.hasOwnProperty('mac_logs')){
+                    this.setState(state => ({
+                        devices: data_obj.mac_logs
+                    }));
+                }
+            }
+            else {
+                this.setState(state => ({
+                    login_required: true
+                }));
+            }
+
         })
         var params = "?top=" + this.state.top_val + "&time_group=" + this.state.time
         console.log(params)
         // open the request with the verb and the url
         xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/num_logs' + params)
+        // set auth header
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // send the request
         xhr.send()
     }
@@ -137,6 +150,11 @@ class App extends React.Component {
     }
 
     render() {
+        if (this.state.login_required) {
+            return <Redirect to={{
+                pathname: "/login"
+            }}/>;
+        }
         if (this.state.go_settings) {
             return <Redirect to={{
                 pathname: "/settings"

@@ -46,6 +46,7 @@ def login():
         response["status"] = "fail"
         response["message"] = "Invalid payload"
         response = jsonify(response)
+        response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
     user = AppUser.query.filter_by(password=password).first()
     if user:
@@ -59,16 +60,19 @@ def login():
             response["message"] = "Login successful"
             response["auth_token"] = auth_token.decode("utf-8")
             response = jsonify(response)
+            response.headers.add("Access-Control-Allow-Origin", "*")
             return response, 200
         else:
             response["status"] = "fail"
             response["message"] = "Error creating auth token"
             response = jsonify(response)
+            response.headers.add("Access-Control-Allow-Origin", "*")
             return response, 401
     else:
         response["status"] = "fail"
         response["message"] = "Wrong password"
         response = jsonify(response)
+        response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
 
 
@@ -162,6 +166,15 @@ def get_mac_logs(resp):
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return jsonify(return_message), 200
+
+
+@app.route('/num_logs', methods=['OPTIONS'])
+def get_mac_num_options():
+    response = jsonify({'Allow': 'GET'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
+    return response, 200
 
 
 @app.route('/num_logs', methods=['GET'])
