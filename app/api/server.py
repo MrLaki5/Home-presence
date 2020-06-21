@@ -76,6 +76,27 @@ def login():
         return response, 200
 
 
+@app.route('/is_authenticated', methods=['OPTIONS'])
+def check_auth_token_options():
+    print("test")
+    response = jsonify({'Allow': 'GET'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
+    return response, 200
+
+
+@app.route('/is_authenticated', methods=['GET'])
+@authentication
+def check_auth_token(resp):
+    response = {}
+    response["status"] = "success"
+    response["message"] = "Token valid"
+    response = jsonify(response)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+
 @app.route('/workers_start', methods=['GET'])
 @authentication
 def start_workers(resp):
