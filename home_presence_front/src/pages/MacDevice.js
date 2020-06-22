@@ -36,7 +36,8 @@ class MacDevice extends React.Component {
             _1y_opacity: 0.5,
             row_per_page: 10,
             page_num: 0,
-            all_user_count: 0
+            all_user_count: 0,
+            login_required: false
         };
         this.goBack = this.goBack.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
@@ -59,16 +60,27 @@ class MacDevice extends React.Component {
             // update the state of the component with the result here
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
-            this.setState(state => ({
-                times: data_obj.times,
-                all_user_count: data_obj.count
-            }));
+            if (data_obj["status"] === "success"){
+                 if (data_obj.hasOwnProperty('times') && data_obj.hasOwnProperty('count')){
+                    this.setState(state => ({
+                        times: data_obj.times,
+                        all_user_count: data_obj.count
+                    }));
+                 }
+            }
+            else {
+                this.setState(state => ({
+                    login_required: true
+                }));
+            }
         })
         var params = "mac=" + this.props.location.state.mac + "&time_group=" + this.state.time_group + "&per_page=" + this.state.row_per_page + "&page_num=" + (this.state.page_num + 1)
         console.log(params)
         // open the request with the verb and the url
         xhr.open('POST', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/time_for_mac')
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // send the request
         xhr.send(params)
     }
@@ -100,6 +112,8 @@ class MacDevice extends React.Component {
         // open the request with the verb and the url
         xhr.open('POST', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/change_name')
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // send the request
         xhr.send(params)
     }
@@ -171,6 +185,11 @@ class MacDevice extends React.Component {
     };
 
     render() {
+        if (this.state.login_required) {
+            return <Redirect to={{
+                pathname: "/login"
+            }}/>;
+        }
         if (this.state.go_back) {
             if (!this.props.location.state.time_back)
                 return <Redirect to={{

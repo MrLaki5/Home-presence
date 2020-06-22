@@ -38,6 +38,7 @@ def ping(resp):
     return jsonify(response), 200
 
 
+# Method used for login functionality
 @app.route('/login', methods=['POST'])
 def login():
     password = request.form.get('password')
@@ -76,9 +77,9 @@ def login():
         return response, 200
 
 
+# Method used for checking if auth token is valid
 @app.route('/is_authenticated', methods=['OPTIONS'])
 def check_auth_token_options():
-    print("test")
     response = jsonify({'Allow': 'GET'})
     response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Headers", "*")
@@ -97,6 +98,16 @@ def check_auth_token(resp):
     return response, 200
 
 
+# Method used for starting workers
+@app.route('/workers_start', methods=['OPTIONS'])
+def start_workers_options():
+    response = jsonify({'Allow': 'GET'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
+    return response, 200
+
+
 @app.route('/workers_start', methods=['GET'])
 @authentication
 def start_workers(resp):
@@ -109,6 +120,16 @@ def start_workers(resp):
         response["message"] = "workers already started"
     response = jsonify(response)
     response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+
+# Method used for stopping workers
+@app.route('/workers_stop', methods=['OPTIONS'])
+def stop_workers_options():
+    response = jsonify({'Allow': 'GET'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
     return response, 200
 
 
@@ -127,6 +148,16 @@ def stop_workers(resp):
     return response, 200
 
 
+# Method used for getting workers status
+@app.route('/workers_status', methods=['OPTIONS'])
+def status_workers_options():
+    response = jsonify({'Allow': 'GET'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
+    return response, 200
+
+
 @app.route('/workers_status', methods=['GET'])
 @authentication
 def status_workers(resp):
@@ -142,7 +173,17 @@ def status_workers(resp):
     return response, 200
 
 
-@app.route('/settings', methods=['GET', 'POST', 'OPTIONS'])
+# Method used for getting and setting settings
+@app.route('/settings', methods=['OPTIONS'])
+def settings_manager_options():
+    response = jsonify({'Allow': 'GET,POST'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', 'POST,GET')
+    return response, 200
+
+
+@app.route('/settings', methods=['GET', 'POST'])
 @authentication
 def settings_manager(resp):
     response = {}
@@ -153,12 +194,6 @@ def settings_manager(resp):
         response = jsonify(response)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
-    elif request.method == 'OPTIONS':
-        response = jsonify({'Allow': 'GET,POST'})
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        response.headers.add('Access-Control-Allow-Methods', 'POST,GET')
-        response.headers.add('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-Type, Accept")
-        return response, 200
     else:
         data = request.get_json()
         workers_settings = workers_manager.set_settings(data)
@@ -167,6 +202,16 @@ def settings_manager(resp):
         response = jsonify(response)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
+
+
+# Method used for simple logs of last macs
+@app.route('/mac_logs', methods=['OPTIONS'])
+def get_mac_logs_options():
+    response = jsonify({'Allow': 'GET'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
+    return response, 200
 
 
 @app.route('/mac_logs', methods=['GET'])
@@ -189,6 +234,7 @@ def get_mac_logs(resp):
     return jsonify(return_message), 200
 
 
+# Method used for getting mac numbers over time
 @app.route('/num_logs', methods=['OPTIONS'])
 def get_mac_num_options():
     response = jsonify({'Allow': 'GET'})
@@ -240,6 +286,16 @@ def get_mac_num(resp):
     }
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+
+# Method used for getting macs in specific time
+@app.route('/mac_in_time', methods=['OPTIONS'])
+def get_mac_in_time_options():
+    response = jsonify({'Allow': 'GET'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
     return response, 200
 
 
@@ -309,6 +365,16 @@ def get_mac_in_time(resp):
     }
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+
+# Method used for getting all times for specific mac
+@app.route('/time_for_mac', methods=['OPTIONS'])
+def get_time_for_mac_options():
+    response = jsonify({'Allow': 'POST'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'POST')
     return response, 200
 
 
@@ -382,6 +448,16 @@ def get_time_for_mac(resp):
     return response, 200
 
 
+# Method used for getting all users with specific pattern
+@app.route('/users', methods=['OPTIONS'])
+def get_users_options():
+    response = jsonify({'Allow': 'GET'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
+    return response, 200
+
+
 @app.route('/users', methods=['GET'])
 @authentication
 def get_users(resp):
@@ -419,6 +495,16 @@ def get_users(resp):
     }
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
+
+
+# Method used for changing specific user name
+@app.route('/change_name', methods=['OPTIONS'])
+def change_name_options():
+    response = jsonify({'Allow': 'POST'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'POST')
     return response, 200
 
 

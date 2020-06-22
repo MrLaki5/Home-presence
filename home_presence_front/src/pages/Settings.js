@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from "react-router-dom";
 
 import Menu_HP from '../components/Menu_HP'
 import Title_HP from '../components/Title_HP'
@@ -21,7 +22,8 @@ class MacDevice extends React.Component {
             sleep_time_db: 0,
             network_mask: "",
             sleep_time_mac: 0,
-            max_miss_count: 0
+            max_miss_count: 0,
+            login_required: false
         };
         this.checkWorkerStatus = this.checkWorkerStatus.bind(this)
         this.sendWorkerChange = this.sendWorkerChange.bind(this)
@@ -47,19 +49,30 @@ class MacDevice extends React.Component {
             // update the state of the component with the result here
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
-            if (data_obj["state"] === "running"){
-                this.setState(state => ({
-                    worker_status: true
-                }));
+            if (data_obj["status"] === "success"){
+                 if (data_obj.hasOwnProperty('state')){
+                    if (data_obj["state"] === "running"){
+                        this.setState(state => ({
+                            worker_status: true
+                        }));
+                    }
+                    else {
+                        this.setState(state => ({
+                            worker_status: false
+                        }));
+                    }
+                 }
             }
-            else {
+            else{
                 this.setState(state => ({
-                    worker_status: false
+                    login_required: true
                 }));
             }
         })
         // open the request with the verb and the url
         xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/workers_status')
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // send the request
         xhr.send()
     }
@@ -73,17 +86,28 @@ class MacDevice extends React.Component {
             // update the state of the component with the result here
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
-            data_obj = data_obj["settings"]
-            this.setState(state => ({
-                sleep_time_db: data_obj["sleep_time_db"],
-                network_mask: data_obj["network_mask"],
-                sleep_time_mac: data_obj["sleep_time_mac"],
-                max_miss_count: data_obj["max_miss_count"]
-            }));
+            if (data_obj["status"] === "success"){
+                 if (data_obj.hasOwnProperty('settings')){
+                    data_obj = data_obj["settings"]
+                    this.setState(state => ({
+                        sleep_time_db: data_obj["sleep_time_db"],
+                        network_mask: data_obj["network_mask"],
+                        sleep_time_mac: data_obj["sleep_time_mac"],
+                        max_miss_count: data_obj["max_miss_count"]
+                    }));
+                 }
+            }
+            else{
+                this.setState(state => ({
+                    login_required: true
+                }));
+            }
 
         })
         // open the request with the verb and the url
         xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/settings')
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // send the request
         xhr.send()
     }
@@ -97,14 +121,22 @@ class MacDevice extends React.Component {
             // update the state of the component with the result here
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
-            data_obj = data_obj["settings"]
-            this.setState(state => ({
-                sleep_time_db: data_obj["sleep_time_db"],
-                network_mask: data_obj["network_mask"],
-                sleep_time_mac: data_obj["sleep_time_mac"],
-                max_miss_count: data_obj["max_miss_count"]
-            }));
-
+            if (data_obj["status"] === "success"){
+                 if (data_obj.hasOwnProperty('settings')){
+                    data_obj = data_obj["settings"]
+                    this.setState(state => ({
+                        sleep_time_db: data_obj["sleep_time_db"],
+                        network_mask: data_obj["network_mask"],
+                        sleep_time_mac: data_obj["sleep_time_mac"],
+                        max_miss_count: data_obj["max_miss_count"]
+                    }));
+                 }
+            }
+            else{
+                this.setState(state => ({
+                    login_required: true
+                }));
+            }
         })
 
         const json_data = {
@@ -117,6 +149,8 @@ class MacDevice extends React.Component {
         // open the request with the verb and the url
         xhr.open('POST', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/settings')
         xhr.setRequestHeader('Content-Type', 'application/json');
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // send the request
         xhr.send(JSON.stringify(json_data))
     }
@@ -151,6 +185,8 @@ class MacDevice extends React.Component {
             // open the request with the verb and the url
             xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/workers_stop')
         }
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // send the request
         xhr.send()
     }
@@ -184,6 +220,11 @@ class MacDevice extends React.Component {
     }
 
     render() {
+        if (this.state.login_required) {
+            return <Redirect to={{
+                pathname: "/login"
+            }}/>;
+        }
         console.log("Network mask: " + this.state.network_mask)
         return  <Grid container className='MainContainer'>
             {/* Title */}

@@ -32,7 +32,8 @@ class SearchDevices extends React.Component {
             search: "",
             search_curr: "",
             row_per_page: 10,
-            page_num: 0
+            page_num: 0,
+            login_required: false
         };
         this.getData = this.getData.bind(this)
         this.goDevice = this.goDevice.bind(this)
@@ -55,16 +56,27 @@ class SearchDevices extends React.Component {
             // update the state of the component with the result here
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
-            this.setState(state => ({
-                macs: data_obj.users,
-                all_user_count: data_obj.count
-            }));
+            if (data_obj["status"] === "success"){
+                 if (data_obj.hasOwnProperty('users') && data_obj.hasOwnProperty('count')){
+                    this.setState(state => ({
+                        macs: data_obj.users,
+                        all_user_count: data_obj.count
+                    }));
+                 }
+            }
+            else{
+                this.setState(state => ({
+                    login_required: true
+                }));
+            }
         })
         //var params = "?time=" + this.props.location.state.time + "&time_group=" + this.props.location.state.time_group
         var params = "?name=" + this.state.search + "&per_page=" + this.state.row_per_page + "&page_num=" + (this.state.page_num + 1)
         console.log(params)
         // open the request with the verb and the url
         xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/users' + params)
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // send the request
         xhr.send()
     }
@@ -111,6 +123,11 @@ class SearchDevices extends React.Component {
     };
 
     render() {
+        if (this.state.login_required) {
+            return <Redirect to={{
+                pathname: "/login"
+            }}/>;
+        }
         if (this.state.go_device) {
             return <Redirect to={{
                 pathname: "/mac_device",

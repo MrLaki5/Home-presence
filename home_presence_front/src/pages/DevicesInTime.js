@@ -30,7 +30,8 @@ class DevicesInTime extends React.Component {
             dev_mac: "",
             row_per_page: 10,
             page_num: 0,
-            all_device_count: 0
+            all_device_count: 0,
+            login_required: false
         };
         this.getData = this.getData.bind(this)
         this.goBack = this.goBack.bind(this)
@@ -52,13 +53,25 @@ class DevicesInTime extends React.Component {
             // update the state of the component with the result here
             console.log(xhr.responseText)
             var data_obj = JSON.parse(xhr.responseText);
-            this.setState(state => ({
-                macs: data_obj.mac_logs,
-                all_device_count: data_obj.count
-            }));
+            if (data_obj["status"] === "success"){
+                 if (data_obj.hasOwnProperty('mac_logs')){
+                    this.setState(state => ({
+                        macs: data_obj.mac_logs,
+                        all_device_count: data_obj.count
+                    }));
+                 }
+            }
+            else {
+                this.setState(state => ({
+                    login_required: true
+                }));
+            }
+
         })
         var params = "?time=" + this.props.location.state.time + "&time_group=" + this.props.location.state.time_group + "&per_page=" + this.state.row_per_page + "&page_num=" + (this.state.page_num + 1)
         console.log(params)
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // open the request with the verb and the url
         xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/mac_in_time' + params)
         // send the request
@@ -97,6 +110,11 @@ class DevicesInTime extends React.Component {
     };
 
     render() {
+        if (this.state.login_required) {
+            return <Redirect to={{
+                pathname: "/login"
+            }}/>;
+        }
         if (this.state.go_back) {
             return <Redirect to={{
                 pathname: "/"

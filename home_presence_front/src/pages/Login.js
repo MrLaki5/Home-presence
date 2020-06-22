@@ -125,6 +125,7 @@ class Login extends React.Component {
                         style={{color: "var(--main-primary-color)" }}
                         placeholder="Password"
                         fullWidth
+                        type="password"
                         margin="normal"
                         onChange={this.handlePasswordChange}
                         value={this.state.password}
