@@ -114,6 +114,11 @@ class Login extends React.Component {
             {/* Title */}
             <Title_HP/>
 
+            {/* Title margin */}
+            <Grid container item xs={12}>
+                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} > </Button>
+            </Grid>
+
             {/* Login part */}
             <Grid container item xs={12} style={{marginTop: '10%'}}>
                 {/* Password */}
