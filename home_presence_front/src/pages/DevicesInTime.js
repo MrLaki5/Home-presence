@@ -70,10 +70,10 @@ class DevicesInTime extends React.Component {
         })
         var params = "?time=" + this.props.location.state.time + "&time_group=" + this.props.location.state.time_group + "&per_page=" + this.state.row_per_page + "&page_num=" + (this.state.page_num + 1)
         console.log(params)
-        // add auth token
-        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // open the request with the verb and the url
         xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/mac_in_time' + params)
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
         // send the request
         xhr.send()
     }

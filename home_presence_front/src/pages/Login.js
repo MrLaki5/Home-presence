@@ -51,7 +51,7 @@ class Login extends React.Component {
                 }
             }
             if (!token_acquired){
-                localStorage.removeItem('auth_token');
+                localStorage.removeItem('Token');
             }
         })
 
@@ -81,7 +81,7 @@ class Login extends React.Component {
                 }));
             }
             if (!token_acquired){
-                localStorage.removeItem('auth_token');
+                localStorage.removeItem('Token');
             }
         })
 
@@ -115,7 +115,7 @@ class Login extends React.Component {
             <Title_HP/>
 
             {/* Login part */}
-            <Grid container item xs={12} style={{marginBottom: '3%'}}>
+            <Grid container item xs={12} style={{marginTop: '10%'}}>
                 {/* Password */}
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 <Grid item xs={12} md={4}>
@@ -123,7 +123,7 @@ class Login extends React.Component {
                         id="standard-full-width"
                         label="Password"
                         style={{color: "var(--main-primary-color)" }}
-                        placeholder="Password"
+                        placeholder="Type password"
                         fullWidth
                         type="password"
                         margin="normal"
