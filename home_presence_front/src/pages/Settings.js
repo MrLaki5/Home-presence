@@ -23,7 +23,10 @@ class MacDevice extends React.Component {
             network_mask: "",
             sleep_time_mac: 0,
             max_miss_count: 0,
-            login_required: false
+            login_required: false,
+            old_password: "",
+            new_password: "",
+            password_change_status: ""
         };
         this.checkWorkerStatus = this.checkWorkerStatus.bind(this)
         this.sendWorkerChange = this.sendWorkerChange.bind(this)
@@ -33,6 +36,9 @@ class MacDevice extends React.Component {
         this.handleSleepTimeMacChange = this.handleSleepTimeMacChange.bind(this)
         this.handleSleepTimeDBChange = this.handleSleepTimeDBChange.bind(this)
         this.sendSettings = this.sendSettings.bind(this)
+        this.passwordChange = this.passwordChange.bind(this)
+        this.handlePasswordNewChange = this.handlePasswordNewChange.bind(this)
+        this.handlePasswordOldChange = this.handlePasswordOldChange.bind(this)
     }
 
     componentDidMount() {
@@ -191,6 +197,43 @@ class MacDevice extends React.Component {
         xhr.send()
     }
 
+    passwordChange(event) {
+        // create a new XMLHttpRequest
+        var xhr = new XMLHttpRequest()
+
+        // get a callback when the server responds
+        xhr.addEventListener('load', () => {
+            // update the state of the component with the result here
+            console.log(xhr.responseText)
+            var data_obj = JSON.parse(xhr.responseText);
+            if (data_obj["status"] === "success"){
+                this.setState(state => ({
+                    password_change_status: data_obj["message"],
+                    old_password: "",
+                    new_password: ""
+                }));
+            }
+            else {
+                this.setState(state => ({
+                    password_change_status: data_obj["message"],
+                    old_password: "",
+                    new_password: ""
+                }));
+            }
+        })
+
+        var formData = new FormData();
+        formData.append("old_password", this.state.old_password)
+        formData.append("new_password", this.state.new_password)
+
+        // open the request with the verb and the url
+        xhr.open('POST', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/change_password')
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
+        // send the request
+        xhr.send(formData)
+    }
+
     handleNetworkMaskChange(event) {
         const value = event.target.value || ""
         this.setState(state => ({
@@ -216,6 +259,20 @@ class MacDevice extends React.Component {
         const value = event.target.value || ""
         this.setState(state => ({
             sleep_time_db: Number(value)
+        }));
+    }
+
+    handlePasswordOldChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            old_password: value
+        }));
+    }
+
+    handlePasswordNewChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            new_password: value
         }));
     }
 
@@ -364,6 +421,81 @@ class MacDevice extends React.Component {
                             }
                             label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
                         />
+                    </Hidden>
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+            </Grid>
+
+            {/* Password change part */}
+            <Grid container item xs={12} style={{marginTop: '3%'}}>
+                {/* Old password */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="Old password"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="Old password"
+                        fullWidth
+                        type="password"
+                        margin="normal"
+                        onChange={this.handlePasswordOldChange}
+                        value={this.state.old_password}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* New password */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="New password"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="New password"
+                        fullWidth
+                        type="password"
+                        margin="normal"
+                        onChange={this.handlePasswordNewChange}
+                        value={this.state.new_password}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* Password change button */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Button PC */}
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} onClick={ () => this.passwordChange()}>Change password</Button>
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Button Mobile */}
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} onClick={ () => this.passwordChange()}>Change password</Button>
+                    </Hidden>
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/*Status messages */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Message PC */}
+                        <div className='TitleVersion' style={{color: "var(--main-error-color)"}}>
+                            {this.state.password_change_status}
+                        </div>
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Message Mobile */}
+                        <div className='TitleVersionMobile' style={{color: "var(--main-error-color)"}}>
+                            {this.state.password_change_status}
+                        </div>
                     </Hidden>
                 </Grid>
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>

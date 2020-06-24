@@ -542,6 +542,50 @@ def change_name(resp):
     return response, 400
 
 
+# Method used for changing password
+@app.route('/change_password', methods=['OPTIONS'])
+def change_password_options():
+    response = jsonify({'Allow': 'POST'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'POST')
+    return response, 200
+
+
+@app.route('/change_password', methods=['POST'])
+@authentication
+def change_password(resp):
+    new_password = request.form.get("new_password")
+    old_password = request.form.get("old_password")
+    if new_password and old_password and new_password != "":
+        user_db = AppUser.query.filter_by(password=old_password).first()
+        if user_db:
+            user_db.password = new_password
+            db.session.commit()
+            return_message = {
+                "status": "success",
+                "message": "Password changed"
+            }
+            response = jsonify(return_message)
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response, 200
+        else:
+            return_message = {
+                "status": "fail",
+                "message": "Wrong old password"
+            }
+            response = jsonify(return_message)
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            return response, 400
+    return_message = {
+        "status": "fail",
+        "message": "Wrong payload"
+    }
+    response = jsonify(return_message)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 400
+
+
 # Create flask app and set it up to listen on specific ip and specific port
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
