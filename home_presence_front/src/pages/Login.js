@@ -16,18 +16,26 @@ class Login extends React.Component {
         super(props);
         this.state = {
             password: "",
-            login_approved: false
+            login_approved: false,
+            login_error: ""
         };
         this.handlePasswordChange = this.handlePasswordChange.bind(this)
         this.sendLogin = this.sendLogin.bind(this)
         this.handleLoginEvent = this.handleLoginEvent.bind(this)
         this.check_authenticated = this.check_authenticated.bind(this)
+        this.onKeyDown = this.onKeyDown.bind(this)
     }
 
     componentDidMount() {
         // If token exists on mounting try to login
         if (!(localStorage.getItem("Token") === null)) {
             this.check_authenticated();
+        }
+    }
+
+    onKeyDown(event) {
+        if (event.key === 'Enter') {
+            this.sendLogin();
         }
     }
 
@@ -49,6 +57,12 @@ class Login extends React.Component {
                         login_approved: true
                     }));
                 }
+            }
+            else {
+                this.setState(state => ({
+                    login_error: data_obj["message"],
+                    password: ""
+                }));
             }
             if (!token_acquired){
                 localStorage.removeItem('Token');
@@ -132,6 +146,7 @@ class Login extends React.Component {
                         fullWidth
                         type="password"
                         margin="normal"
+                        onKeyDown={this.onKeyDown}
                         onChange={this.handlePasswordChange}
                         value={this.state.password}
                         InputLabelProps={{
@@ -151,6 +166,24 @@ class Login extends React.Component {
                     <Hidden only={['md', 'lg', 'xl']}>
                         {/* Button Mobile */}
                         <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} onClick={ () => this.handleLoginEvent()}>Login</Button>
+                    </Hidden>
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/*Error messages */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Message PC */}
+                        <div className='TitleVersion' style={{color: "var(--main-error-color)"}}>
+                            {this.state.login_error}
+                        </div>
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Message Mobile */}
+                        <div className='TitleVersionMobile' style={{color: "var(--main-error-color)"}}>
+                            {this.state.login_error}
+                        </div>
                     </Hidden>
                 </Grid>
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>

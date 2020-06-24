@@ -1,6 +1,7 @@
 :root {
     --main-bg-color: #FFFFFF;
     --main-primary-color: #0B6623;
+    --main-error-color: #DC143C;
 }
 
 @font-face {
