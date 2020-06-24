@@ -190,6 +190,7 @@ def settings_manager(resp):
     if request.method == 'GET':
         workers_settings = workers_manager.get_settings()
         response["status"] = "success"
+        response["message"] = "Settings aquired"
         response["settings"] = workers_settings
         response = jsonify(response)
         response.headers.add("Access-Control-Allow-Origin", "*")
@@ -198,6 +199,7 @@ def settings_manager(resp):
         data = request.get_json()
         workers_settings = workers_manager.set_settings(data)
         response["status"] = "success"
+        response["message"] = "Settings changed"
         response["settings"] = workers_settings
         response = jsonify(response)
         response.headers.add("Access-Control-Allow-Origin", "*")
@@ -520,7 +522,7 @@ def change_name(resp):
             db.session.commit()
             return_message = {
                 "status": "success",
-                "message": "name change done"
+                "message": "Name change done"
             }
             response = jsonify(return_message)
             response.headers.add("Access-Control-Allow-Origin", "*")
@@ -528,14 +530,14 @@ def change_name(resp):
         else:
             return_message = {
                 "status": "fail",
-                "message": "mac does not exist in db"
+                "message": "Mac does not exist in db"
             }
             response = jsonify(return_message)
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response, 400
     return_message = {
         "status": "fail",
-        "message": "wrong payload"
+        "message": "Wrong payload"
     }
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")

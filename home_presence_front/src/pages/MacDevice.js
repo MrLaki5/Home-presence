@@ -37,7 +37,8 @@ class MacDevice extends React.Component {
             row_per_page: 10,
             page_num: 0,
             all_user_count: 0,
-            login_required: false
+            login_required: false,
+            change_name_status: ""
         };
         this.goBack = this.goBack.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
@@ -106,6 +107,10 @@ class MacDevice extends React.Component {
         xhr.addEventListener('load', () => {
             // update the state of the component with the result here
             console.log(xhr.responseText)
+            var data_obj = JSON.parse(xhr.responseText);
+            this.setState(state => ({
+                change_name_status: data_obj["message"]
+            }));
         })
         var params = "name=" + this.state.name + "&mac=" + this.props.location.state.mac
         console.log(params)
@@ -289,7 +294,24 @@ class MacDevice extends React.Component {
                         </Hidden>
                     </Grid>
                     <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
-
+                    
+                    {/*Status messages */}
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                    <Grid item xs={12} md={4}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Message PC */}
+                            <div className='TitleVersion' style={{color: "var(--main-primary-color)"}}>
+                                {this.state.change_name_status}
+                            </div>
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Message Mobile */}
+                            <div className='TitleVersionMobile' style={{color: "var(--main-primary-color)"}}>
+                                {this.state.change_name_status}
+                            </div>
+                        </Hidden>
+                    </Grid>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 </Grid>
 
                 {/* Time Group and slider */}

@@ -26,7 +26,8 @@ class MacDevice extends React.Component {
             login_required: false,
             old_password: "",
             new_password: "",
-            password_change_status: ""
+            password_change_status: "",
+            settings_change_status: ""
         };
         this.checkWorkerStatus = this.checkWorkerStatus.bind(this)
         this.sendWorkerChange = this.sendWorkerChange.bind(this)
@@ -129,18 +130,20 @@ class MacDevice extends React.Component {
             var data_obj = JSON.parse(xhr.responseText);
             if (data_obj["status"] === "success"){
                  if (data_obj.hasOwnProperty('settings')){
-                    data_obj = data_obj["settings"]
+                    var data_obj_set = data_obj["settings"]
                     this.setState(state => ({
-                        sleep_time_db: data_obj["sleep_time_db"],
-                        network_mask: data_obj["network_mask"],
-                        sleep_time_mac: data_obj["sleep_time_mac"],
-                        max_miss_count: data_obj["max_miss_count"]
+                        sleep_time_db: data_obj_set["sleep_time_db"],
+                        network_mask: data_obj_set["network_mask"],
+                        sleep_time_mac: data_obj_set["sleep_time_mac"],
+                        max_miss_count: data_obj_set["max_miss_count"],
+                        settings_change_status: data_obj["message"]
                     }));
                  }
             }
             else{
                 this.setState(state => ({
-                    login_required: true
+                    login_required: true,
+                    settings_change_status: data_obj["message"]
                 }));
             }
         })
@@ -384,6 +387,24 @@ class MacDevice extends React.Component {
                     </Hidden>
                 </Grid>
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/*Status messages */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Message PC */}
+                        <div className='TitleVersion' style={{color: "var(--main-primary-color)"}}>
+                            {this.state.settings_change_status}
+                        </div>
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Message Mobile */}
+                        <div className='TitleVersionMobile' style={{color: "var(--main-primary-color)"}}>
+                            {this.state.settings_change_status}
+                        </div>
+                    </Hidden>
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
             </Grid>
 
             {/* Workers status slider */}
@@ -487,13 +508,13 @@ class MacDevice extends React.Component {
                 <Grid item xs={12} md={4}>
                     <Hidden only={['xs', 'sm']}>
                         {/* Message PC */}
-                        <div className='TitleVersion' style={{color: "var(--main-error-color)"}}>
+                        <div className='TitleVersion' style={{color: "var(--main-primary-color)"}}>
                             {this.state.password_change_status}
                         </div>
                     </Hidden>
                     <Hidden only={['md', 'lg', 'xl']}>
                         {/* Message Mobile */}
-                        <div className='TitleVersionMobile' style={{color: "var(--main-error-color)"}}>
+                        <div className='TitleVersionMobile' style={{color: "var(--main-primary-color)"}}>
                             {this.state.password_change_status}
                         </div>
                     </Hidden>
