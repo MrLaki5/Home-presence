@@ -1,7 +1,6 @@
 import React from 'react';
 import { Redirect } from "react-router-dom";
 
-import '../app.css'
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';

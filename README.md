@@ -16,3 +16,12 @@
 
 <br/>
 <img src="img/gitImg.png" width="500"/>
+
+
+## Build prepare:
+ * cd home_presence_front
+ * npm install & npm run build
+ * cp .env ./build
+ * mv -r ./build ../nginx/build
+ * cd .. & docker-compose -f docker-compose up -d --build
+

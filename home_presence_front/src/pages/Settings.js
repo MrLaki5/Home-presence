@@ -3,7 +3,6 @@ import { Redirect } from "react-router-dom";
 
 import Menu_HP from '../components/Menu_HP'
 import Title_HP from '../components/Title_HP'
-import '../app.css'
 
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel'

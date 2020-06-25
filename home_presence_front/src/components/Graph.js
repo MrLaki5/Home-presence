@@ -2,7 +2,6 @@ import React from 'react';
 import { VictoryChart, VictoryAxis, VictoryBar } from 'victory';
 import { Redirect } from "react-router-dom";
 
-import '../app.css'
 
 class Graph extends React.Component {
 

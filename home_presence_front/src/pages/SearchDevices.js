@@ -16,7 +16,6 @@ import TextField from '@material-ui/core/TextField';
 
 import Menu_HP from '../components/Menu_HP'
 import Title_HP from '../components/Title_HP'
-import '../app.css'
 
 
 class SearchDevices extends React.Component {

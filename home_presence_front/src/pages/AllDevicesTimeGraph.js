@@ -3,7 +3,6 @@ import React from 'react';
 import Graph from '../components/Graph'
 import Menu_HP from '../components/Menu_HP'
 import Title_HP from '../components/Title_HP'
-import '../app.css'
 import { Redirect } from "react-router-dom";
 
 import Grid from '@material-ui/core/Grid';

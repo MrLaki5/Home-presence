@@ -7,3 +7,6 @@ __pycache__
 
 # Pycharm
 .idea/*
+
+# build of frontend
+nginx/build/*

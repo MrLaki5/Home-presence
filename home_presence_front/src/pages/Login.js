@@ -2,8 +2,6 @@ import React from 'react';
 import { Redirect } from "react-router-dom";
 
 import Title_HP from '../components/Title_HP'
-import '../app.css'
-
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import TextField from '@material-ui/core/TextField';

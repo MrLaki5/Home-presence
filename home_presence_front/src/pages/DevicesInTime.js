@@ -15,7 +15,6 @@ import Button from '@material-ui/core/Button';
 
 import Menu_HP from '../components/Menu_HP'
 import Title_HP from '../components/Title_HP'
-import '../app.css'
 
 
 class DevicesInTime extends React.Component {
