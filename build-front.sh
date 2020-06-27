@@ -49,14 +49,14 @@ if [ "$INSTALL_PACKAGES" = "true" ]; then
   npm install
 fi
 
+# Create env file
+echo "--------Creating env file--------"
+cp ./.env_in ./.env
+sed -i "s/REACT_APP_SERVER_ADDRESS=.*/REACT_APP_SERVER_ADDRESS=$RASPBERRY_IP/" ./.env
+
 # Build frontend
 echo "--------Building frontend--------"
 npm run build
-
-# Create env file
-echo "--------Creating env file--------"
-cp .env ./build
-sed -i "s/REACT_APP_SERVER_ADDRESS=.*/REACT_APP_SERVER_ADDRESS=$RASPBERRY_IP/" ./build/.env
 
 # Got to nginx frontend build
 cd ${ROOT_DIR}/nginx

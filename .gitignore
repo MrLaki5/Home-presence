@@ -7,3 +7,6 @@ __pycache__
 
 # Pycharm
 .idea/*
+
+# env file
+home-presence-front/.env
