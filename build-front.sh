@@ -44,7 +44,7 @@ cd ${ROOT_DIR}/home-presence-front
 rm -rf build
 
 # Install packages
-if [ "INSTALL_PACKAGES" = "true" ]; then
+if [ "$INSTALL_PACKAGES" = "true" ]; then
   echo "--------Installing npm packages--------"
   npm install
 fi
