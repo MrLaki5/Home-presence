@@ -20,6 +20,7 @@ services:
     tty: true
     restart: always
     environment:
+     - PASSWORD=toor
      - NETWORK_MASK=192.168.1.0/24
      - MAX_MISS_COUNTER=5
      - WORKER_MAC_SLEEP_TIME_S=150

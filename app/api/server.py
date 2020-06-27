@@ -10,6 +10,7 @@ import utils.workers_manager as workers_manager
 from utils.token_manager import encode_auth_token
 from sqlalchemy import func, desc, literal
 from authentication import authentication
+import utils.password_manager as password_manager
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -49,6 +50,7 @@ def login():
         response = jsonify(response)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response, 200
+    password = password_manager.hash_password(password)
     user = AppUser.query.filter_by(password=password).first()
     if user:
         time_login = function_now()
@@ -560,8 +562,10 @@ def change_password(resp):
     new_password = request.form.get("new_password")
     old_password = request.form.get("old_password")
     if new_password and old_password and new_password != "":
+        old_password = password_manager.hash_password(old_password)
         user_db = AppUser.query.filter_by(password=old_password).first()
         if user_db:
+            new_password = password_manager.hash_password(new_password)
             user_db.password = new_password
             db.session.commit()
             return_message = {
