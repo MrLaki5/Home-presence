@@ -4,30 +4,8 @@
 <br/>
 
 
-
-## Stack:
- * Hardware platform: <b>Raspberry Pi</b>
- * Virtualisation: <b>Docker containers</b>
- * Backend api for network statistics: <b>Flask</b>
- * Network statistics library: <b>Nmap</b>
- * Database: <b>PostgreSQL</b>
- * Frontend: <b>React</b>
- * System entry point: <b>Nginx</b>
-
-<br/>
-<img src="img/gitImg.png" width="500"/>
-
-
-## Dependencies:
- * NPM
- * Docker
- * docker-compose
- * docker-machine
- * Raspberry Pi with docker setup [Instructions].
-
-
-## Build:
-### For this step all dependency need to be installed and docker-macine setup.
+### Build:
+#### For this step all [dependencies](#dependencies) need to be installed and docker-macine setup.
 
  * Build frontend:
 ``` bash
@@ -48,3 +26,27 @@ eval "$(docker-machine env <Machine name>)"
 # For more help run: ./build.sh --help
 ```
 
+
+### Stack:
+ * Hardware platform: <b>Raspberry Pi</b>
+ * Virtualization: <b>Docker containers</b>
+ * Backend api for network statistics: <b>Flask</b>
+ * Network statistics library: <b>Nmap</b>
+ * Database: <b>PostgreSQL</b>
+ * Frontend: <b>React</b>
+ * System entry point: <b>Nginx</b>
+
+<br/>
+<img src="img/gitImg.png" width="500"/>
+
+
+### Dependencies:
+ * NPM
+ * Docker
+ * docker-compose
+ * docker-machine
+ * Raspberry Pi with docker setup [Instructions](#raspberry-pi-setup-instructions).
+
+
+### Raspberry Pi setup instructions:
+* TODO: wirte setup instructions
