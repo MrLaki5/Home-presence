@@ -41,12 +41,9 @@ eval "$(docker-machine env <Machine name>)"
 
 
 ### Dependencies:
- * NPM
- * Docker
- * docker-compose
- * docker-machine
- * Raspberry Pi with docker setup [Instructions](#raspberry-pi-setup-instructions).
+ * [NPM](https://www.npmjs.com/)
+ * [Docker](https://www.docker.com/)
+ * [Docker Compose](https://docs.docker.com/compose/install/)
+ * [Docker Machine](https://docs.docker.com/machine/install-machine/)
+ * [Raspberry Pi with docker setup](/How-to-101/raspberry_101.MD#docker-instalation).
 
-
-### Raspberry Pi setup instructions:
-* TODO: wirte setup instructions
