@@ -13,6 +13,7 @@ class DBWorker(threading.Thread):
         self.sleep_time = int(os.environ['WORKER_DB_SLEEP_TIME_S'])
         self.wait_event = threading.Event()
         self.setting_data_lock = threading.Lock()
+        self.previous_time = None
 
     def set_settings(self, settings):
         with self.setting_data_lock:
@@ -35,7 +36,30 @@ class DBWorker(threading.Thread):
                 break
             active_set = self.mac_worker.get_active_set()
             with self.app_context:
+
                 curr_time = function_now()
+                # First run, set the previouse time
+                if self.previous_time is None:
+                    self.previous_time = curr_time
+
+                # Reset counters for top lists if they need to be reset
+                reset_day_counter = ((self.previous_time.day == curr_time.day) and
+                                     (self.previous_time.month == curr_time.month) and
+                                     (self.previous_time.year == curr_time.year))
+                reset_month_counter = ((self.previous_time.month == curr_time.month) and
+                                       (self.previous_time.year == curr_time.year))
+                reset_year_counter = (self.previous_time.year == curr_time.year)
+                if reset_day_counter or reset_month_counter or reset_year_counter:
+                    users = User.query.all()
+                    for user in users:
+                        if reset_day_counter:
+                            user["day_time_count"] = 0
+                        if reset_month_counter:
+                            user["month_time_count"] = 0
+                        if reset_year_counter:
+                            user["year_time_count"] = 0
+                        db.session.commit()
+
                 current_app.logger.debug("DBWorker: update time: " + str(curr_time))
                 for item in active_set:
                     user_exists = User.query.filter_by(mac_address=str(item["mac"])).first()
@@ -46,6 +70,10 @@ class DBWorker(threading.Thread):
                     else:
                         if user_exists["name"] == "" and item["name"] != "":
                             user_exists["name"] = item["name"]
+                    user_exists["all_time_count"] += 1
+                    user_exists["day_time_count"] += 1
+                    user_exists["month_time_count"] += 1
+                    user_exists["year_time_count"] += 1
                     log_user = LogUser(user_uuid=user_exists.uuid, time=curr_time)
                     db.session.add(log_user)
                     db.session.commit()

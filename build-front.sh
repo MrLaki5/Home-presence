@@ -51,6 +51,7 @@ fi
 
 # Create env file
 echo "--------Creating env file--------"
+rm ./.env
 cp ./.env_in ./.env
 sed -i "s/REACT_APP_SERVER_ADDRESS=.*/REACT_APP_SERVER_ADDRESS=$RASPBERRY_IP/" ./.env
 
