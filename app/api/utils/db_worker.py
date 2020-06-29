@@ -1,7 +1,21 @@
 import threading
 import os
 from flask import current_app
-from model import User, db, function_now, LogUser
+from model import User, db, function_now, LogUser, UpdateTime
+
+
+def date_checker(date1, date2):
+    hour_counter = ((date1.hour == date2.hour) and
+                    (date1.day == date2.day) and
+                    (date1.month == date2.month) and
+                    (date1.year == date2.year))
+    day_counter = ((date1.day == date2.day) and
+                   (date1.month == date2.month) and
+                   (date1.year == date2.year))
+    month_counter = ((date1.month == date2.month) and
+                     (date1.year == date2.year))
+    year_counter = (date1.year == date2.year)
+    return not hour_counter, not day_counter, not month_counter, not year_counter
 
 
 class DBWorker(threading.Thread):
@@ -13,7 +27,6 @@ class DBWorker(threading.Thread):
         self.sleep_time = int(os.environ['WORKER_DB_SLEEP_TIME_S'])
         self.wait_event = threading.Event()
         self.setting_data_lock = threading.Lock()
-        self.previous_time = None
 
     def set_settings(self, settings):
         with self.setting_data_lock:
@@ -36,19 +49,15 @@ class DBWorker(threading.Thread):
                 break
             active_set = self.mac_worker.get_active_set()
             with self.app_context:
-
+                # Get times
                 curr_time = function_now()
-                # First run, set the previouse time
-                if self.previous_time is None:
-                    self.previous_time = curr_time
+                update_time = UpdateTime.query.first()
+                if not update_time:
+                    update_time = UpdateTime(last_update=curr_time)
 
                 # Reset counters for top lists if they need to be reset
-                reset_day_counter = ((self.previous_time.day == curr_time.day) and
-                                     (self.previous_time.month == curr_time.month) and
-                                     (self.previous_time.year == curr_time.year))
-                reset_month_counter = ((self.previous_time.month == curr_time.month) and
-                                       (self.previous_time.year == curr_time.year))
-                reset_year_counter = (self.previous_time.year == curr_time.year)
+                reset_hour_counter, reset_day_counter, reset_month_counter, reset_year_counter = date_checker(
+                    update_time["last_update"], curr_time)
                 if reset_day_counter or reset_month_counter or reset_year_counter:
                     users = User.query.all()
                     for user in users:
@@ -60,20 +69,41 @@ class DBWorker(threading.Thread):
                             user["year_time_count"] = 0
                         db.session.commit()
 
+                # Updating update times
+                update_time["last_update"] = curr_time
+                db.session.commit()
+
                 current_app.logger.debug("DBWorker: update time: " + str(curr_time))
                 for item in active_set:
                     user_exists = User.query.filter_by(mac_address=str(item["mac"])).first()
                     if not user_exists:
-                        user_exists = User(mac_address=str(item["mac"]), name=str(item["name"]))
+                        user_exists = User(mac_address=str(item["mac"]),
+                                           name=str(item["name"]),
+                                           last_update=curr_time,
+                                           all_time_count=1,
+                                           day_time_count=1,
+                                           month_time_count=1,
+                                           year_time_count=1
+                                           )
                         db.session.add(user_exists)
                         db.session.commit()
                     else:
                         if user_exists["name"] == "" and item["name"] != "":
                             user_exists["name"] = item["name"]
-                    user_exists["all_time_count"] += 1
-                    user_exists["day_time_count"] += 1
-                    user_exists["month_time_count"] += 1
-                    user_exists["year_time_count"] += 1
+
+                    # Increment counters
+                    inc_day_counter, inc_day_counter, inc_month_counter, inc_year_counter = date_checker(
+                        user_exists["last_update"], curr_time)
+                    if inc_day_counter:
+                        user_exists["all_time_count"] += 1
+                        user_exists["day_time_count"] += 1
+                        user_exists["month_time_count"] += 1
+                        user_exists["year_time_count"] += 1
+
+                    # Updating user update time
+                    user_exists["last_time"] = curr_time
+
+                    # Create log entity
                     log_user = LogUser(user_uuid=user_exists.uuid, time=curr_time)
                     db.session.add(log_user)
                     db.session.commit()

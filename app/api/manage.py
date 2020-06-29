@@ -1,7 +1,7 @@
 from flask.cli import FlaskGroup
 from model import db
 from server import create_app
-from model import User, LogUser, AppUser
+from model import User, LogUser, AppUser, UpdateTime, function_now
 import utils.password_manager as password_manager
 import pytz
 import os
@@ -18,9 +18,16 @@ def recreate_db():
 
 @cli.command()
 def seed_db():
+    # Create default login user
     password = password_manager.hash_password(os.environ['PASSWORD'])
     app_user = AppUser(password=password)
+
+    # Create update times
+    update_time = UpdateTime(last_update=function_now())
+
+    # Add entities to session
     db.session.add(app_user)
+    db.session.add(update_time)
     db.session.commit()
 
 
