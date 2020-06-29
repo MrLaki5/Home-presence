@@ -18,10 +18,33 @@
 <img src="img/gitImg.png" width="500"/>
 
 
-## Build prepare:
- * cd home_presence_front
- * npm install & npm run build
- * cp .env ./build
- * mv -r ./build ../nginx/build
- * cd .. & docker-compose -f docker-compose up -d --build
+## Dependencies:
+ * NPM
+ * Docker
+ * docker-compose
+ * docker-machine
+ * Raspberry Pi with docker setup [Instructions].
+
+
+## Build:
+### For this step all dependency need to be installed and docker-macine setup.
+
+ * Build frontend:
+``` bash
+./build-front.sh [--install-packages] --raspberry-ip <Raspberry ip address>
+# --install-packages needed only on first build.
+# For more help run: ./build-front.sh --help
+```
+
+ * Connect to raspberry docker deamon with docker-machine:
+``` bash
+eval "$(docker-machine env <Machine name>)"
+```
+
+ * Compose and start docker containers on raspberry:
+``` bash
+./build.sh [--recreate-db]
+# --recreate-db when set db will be recreated (needed on first run).
+# For more help run: ./build.sh --help
+```
 
