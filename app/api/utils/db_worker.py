@@ -2,6 +2,7 @@ import threading
 import os
 from flask import current_app
 from model import User, db, function_now, LogUser, UpdateTime
+import pytz
 
 
 def date_checker(date1, date2):
@@ -27,6 +28,7 @@ class DBWorker(threading.Thread):
         self.sleep_time = int(os.environ['WORKER_DB_SLEEP_TIME_S'])
         self.wait_event = threading.Event()
         self.setting_data_lock = threading.Lock()
+        self.tz = pytz.timezone(os.environ['TIMEZONE'])
 
     def set_settings(self, settings):
         with self.setting_data_lock:
@@ -54,10 +56,11 @@ class DBWorker(threading.Thread):
                 update_time = UpdateTime.query.first()
                 if not update_time:
                     update_time = UpdateTime(last_update=curr_time)
+                previous_time = pytz.utc.localize(update_time["last_update"], is_dst=None).astimezone(self.tz)
 
                 # Reset counters for top lists if they need to be reset
                 reset_hour_counter, reset_day_counter, reset_month_counter, reset_year_counter = date_checker(
-                    update_time["last_update"], curr_time)
+                    previous_time, curr_time)
                 if reset_day_counter or reset_month_counter or reset_year_counter:
                     users = User.query.all()
                     for user in users:
@@ -92,16 +95,17 @@ class DBWorker(threading.Thread):
                             user_exists["name"] = item["name"]
 
                     # Increment counters
-                    inc_day_counter, inc_day_counter, inc_month_counter, inc_year_counter = date_checker(
-                        user_exists["last_update"], curr_time)
-                    if inc_day_counter:
+                    user_time = pytz.utc.localize(user_exists["last_update"], is_dst=None).astimezone(self.tz)
+                    inc_hour_counter, inc_day_counter, inc_month_counter, inc_year_counter = date_checker(
+                        user_time, curr_time)
+                    if inc_hour_counter:
                         user_exists["all_time_count"] += 1
                         user_exists["day_time_count"] += 1
                         user_exists["month_time_count"] += 1
                         user_exists["year_time_count"] += 1
 
                     # Updating user update time
-                    user_exists["last_time"] = curr_time
+                    user_exists["last_update"] = curr_time
 
                     # Create log entity
                     log_user = LogUser(user_uuid=user_exists.uuid, time=curr_time)

@@ -35,7 +35,12 @@ def seed_db():
 def all_users():
     users = User.query.all()
     for user in users:
-        print("Username: " + user["name"] + ", mac: " + user["mac_address"])
+        print("Username: " + user["name"] + 
+              ", mac: " + user["mac_address"] + 
+              ", cnt_d: " + str(user["day_time_count"]) + 
+              ", cnt_m: " + str(user["month_time_count"]) + 
+              ", cnt_y: " + str(user["year_time_count"]) + 
+              ", cnt_a: " + str(user["all_time_count"]))
 
 
 @cli.command()
