@@ -502,6 +502,45 @@ def get_users(resp):
     return response, 200
 
 
+# Method for getting users ordered by number of active hours
+@app.route('/top_by_hours', methods=['OPTIONS'])
+def top_by_hours_options():
+    response = jsonify({'Allow': 'GET'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
+    return response, 200
+
+
+@app.route('/top_by_hours', methods=['GET'])
+def top_by_hours():
+    # Get parameters
+    time_group = request.args.get('time_group')
+    time_groups = ["day", "month", "year"]
+    if time_group not in time_groups:
+        time_group = "day"
+    per_page = request.args.get('per_page')
+    try:
+        per_page = int(per_page)
+    except Exception as ex:
+        per_page = 10
+    page_num = request.args.get('page_num')
+    try:
+        page_num = int(page_num)
+    except Exception as ex:
+        page_num = 1
+
+    return_users = []
+
+    users_rank = db.session.query(User, func.rank().over(partition_by=User.day_time_count).label('rnk'), User.day_time_count.label("cnt"), User.name.label("name"), User.mac_address.label("mac_address")).subquery()
+    users_db = db.session.query(users_rank.c.mac_address, users_rank.c.name, users_rank.c.cnt, users_rank.c.rnk).paginate(page_num, per_page, False).items
+    
+
+
+    response = jsonify({})
+    return response, 200
+
+
 # Method used for changing specific user name
 @app.route('/change_name', methods=['OPTIONS'])
 def change_name_options():
