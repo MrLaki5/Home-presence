@@ -516,7 +516,7 @@ def top_by_hours_options():
 def top_by_hours():
     # Get parameters
     time_group = request.args.get('time_group')
-    time_groups = ["day", "month", "year"]
+    time_groups = ["day", "month", "year", "all"]
     if time_group not in time_groups:
         time_group = "day"
     per_page = request.args.get('per_page')
@@ -530,14 +530,31 @@ def top_by_hours():
     except Exception as ex:
         page_num = 1
 
+    user_time_group = None
+    if time_group == "day":
+        user_time_group = User.day_time_count
+    elif time_group == "month":
+        user_time_group = User.month_time_count
+    elif time_group == "year":
+        user_time_group = User.year_time_count
+    else:
+        user_time_group = User.all_time_count
+
     return_users = []
 
-    users_rank = (db.session.query(func.rank().over(order_by=User.day_time_count.desc()).label('rnk'), User.day_time_count.label("cnt"), User.name.label("name"), User.mac_address.label("mac_address")).subquery())
-    users_db = db.session.query(users_rank.c.mac_address, users_rank.c.name, users_rank.c.cnt, users_rank.c.rnk).paginate(page_num, per_page, False).items
+    # Get all users with ranks
+    users_rank = (db.session.query(func.dense_rank().over(order_by=user_time_group.desc()).label('rnk'), 
+                  user_time_group.label("cnt"), 
+                  User.name.label("name"), 
+                  User.mac_address.label("mac_address")).subquery())
+    # Add pagination
+    users_db = db.session.query(users_rank.c.mac_address, 
+                                users_rank.c.name, 
+                                users_rank.c.cnt, 
+                                users_rank.c.rnk).paginate(page_num, per_page, False).items
     
     for user_db in users_db:
         return_users.append({"mac": user_db[0], "name": user_db[1], "count": user_db[2], "rank": user_db[3]})
-    
     return_message = {
         "status": "success",
         "users": return_users
