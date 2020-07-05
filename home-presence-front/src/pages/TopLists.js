@@ -290,7 +290,7 @@ class TopLists extends React.Component {
                                         </Hidden>
                                         <Hidden only={['md', 'lg', 'xl']}>
                                             {/* Button Mobile */}
-                                            <TableCell style={{fontSize: "3vw"}} component="th" scope="row" align="center">
+                                            <TableCell className={this.colorPicker(user.rank)} style={{fontSize: "3vw"}} component="th" scope="row" align="center">
                                                 {user.rank}
                                             </TableCell>
                                             <TableCell style={{fontSize: "3vw"}} component="th" scope="row" align="center">
