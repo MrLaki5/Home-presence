@@ -186,6 +186,7 @@ class TopLists extends React.Component {
                 state: {
                     mac: this.state.dev_mac,
                     name: this.state.dev_name,
+                    top_lists: true
                 }
             }}/>;
         }

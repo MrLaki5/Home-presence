@@ -195,6 +195,11 @@ class MacDevice extends React.Component {
             }}/>;
         }
         if (this.state.go_back) {
+            if (this.props.location.state.top_lists){
+                return <Redirect to={{
+                    pathname: "/top_lists"
+                }}/>;
+            }
             if (!this.props.location.state.time_back)
                 return <Redirect to={{
                     pathname: "/search"
@@ -213,6 +218,9 @@ class MacDevice extends React.Component {
         var current_page_menu = 0
         if(!this.props.location.state.time_back) {
             var current_page_menu = 1
+        }
+        if(this.props.location.state.top_lists){
+            var current_page_menu = 2
         }
 
         return (
