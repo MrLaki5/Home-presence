@@ -546,7 +546,8 @@ def top_by_hours():
     users_rank = (db.session.query(func.dense_rank().over(order_by=user_time_group.desc()).label('rnk'), 
                   user_time_group.label("cnt"), 
                   User.name.label("name"), 
-                  User.mac_address.label("mac_address")).subquery())
+                  User.mac_address.label("mac_address"))
+                  .filter(user_time_group > 0).subquery())
     # Add pagination
     users_db = db.session.query(users_rank.c.mac_address, 
                                 users_rank.c.name, 
