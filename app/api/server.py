@@ -532,12 +532,18 @@ def top_by_hours():
 
     return_users = []
 
-    users_rank = db.session.query(User, func.rank().over(partition_by=User.day_time_count).label('rnk'), User.day_time_count.label("cnt"), User.name.label("name"), User.mac_address.label("mac_address")).subquery()
+    users_rank = (db.session.query(func.rank().over(order_by=User.day_time_count.desc()).label('rnk'), User.day_time_count.label("cnt"), User.name.label("name"), User.mac_address.label("mac_address")).subquery())
     users_db = db.session.query(users_rank.c.mac_address, users_rank.c.name, users_rank.c.cnt, users_rank.c.rnk).paginate(page_num, per_page, False).items
     
+    for user_db in users_db:
+        return_users.append({"mac": user_db[0], "name": user_db[1], "count": user_db[2], "rank": user_db[3]})
+    
+    return_message = {
+        "status": "success",
+        "users": return_users
+    }
 
-
-    response = jsonify({})
+    response = jsonify(return_message)
     return response, 200
 
 
