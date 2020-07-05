@@ -39,10 +39,16 @@ class Menu_HP extends React.Component {
             case "2":
                 this.setState(state => ({
                     should_redirect: true,
-                    redirect_link: "/settings"
+                    redirect_link: "/top_lists"
                 }))
                 break;
             case "3":
+                this.setState(state => ({
+                    should_redirect: true,
+                    redirect_link: "/settings"
+                }))
+                break;
+            case "4":
                 if (!(localStorage.getItem("Token") === null)) {
                     localStorage.removeItem('Token');
                 }
@@ -62,18 +68,7 @@ class Menu_HP extends React.Component {
         }
         return (
             <Grid container item xs={12} style={{marginBottom: '3%'}}>
-                <Grid item xs={3}>
-                    <Hidden only={['xs', 'sm']}>
-                        {/* Button PC */}
-                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 0) ? 1 : 0.5}} onClick={ () => this.redirectFunction('0')}>All</Button>
-                    </Hidden>
-                    <Hidden only={['md', 'lg', 'xl']}>
-                        {/* Button Mobile */}
-                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 0) ? 1 : 0.5}} onClick={ () => this.redirectFunction('0')}>All</Button>
-                    </Hidden>
-                </Grid>
-
-                <Grid item xs={3}>
+                <Grid item xs={(this.state.current_page === 1) ? 4 : 2}>
                     <Hidden only={['xs', 'sm']}>
                         {/* Button PC */}
                         <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 1) ? 1 : 0.5}} onClick={ () => this.redirectFunction('1')}>Search</Button>
@@ -84,25 +79,47 @@ class Menu_HP extends React.Component {
                     </Hidden>
                 </Grid>
 
-                <Grid item xs={3}>
+                <Grid item xs={(this.state.current_page === 2) ? 4 : 2}>
                     <Hidden only={['xs', 'sm']}>
                         {/* Button PC */}
-                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 2) ? 1 : 0.5}} onClick={ () => this.redirectFunction('2')}>Settings</Button>
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 2) ? 1 : 0.5}} onClick={ () => this.redirectFunction('2')}>Top Lists</Button>
                     </Hidden>
                     <Hidden only={['md', 'lg', 'xl']}>
                         {/* Button Mobile */}
-                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 2) ? 1 : 0.5}} onClick={ () => this.redirectFunction('2')}>Settings</Button>
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 2) ? 1 : 0.5}} onClick={ () => this.redirectFunction('2')}>Top Lists</Button>
                     </Hidden>
                 </Grid>
 
-                <Grid item xs={3}>
+                <Grid item xs={(this.state.current_page === 0) ? 4 : 2}>
                     <Hidden only={['xs', 'sm']}>
                         {/* Button PC */}
-                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 3) ? 1 : 0.5}} onClick={ () => this.redirectFunction('3')}>Logout</Button>
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 0) ? 1 : 0.5}} onClick={ () => this.redirectFunction('0')}>All</Button>
                     </Hidden>
                     <Hidden only={['md', 'lg', 'xl']}>
                         {/* Button Mobile */}
-                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 3) ? 1 : 0.5}} onClick={ () => this.redirectFunction('3')}>Logout</Button>
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 0) ? 1 : 0.5}} onClick={ () => this.redirectFunction('0')}>All</Button>
+                    </Hidden>
+                </Grid>
+
+                <Grid item xs={(this.state.current_page === 3) ? 4 : 2}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Button PC */}
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 3) ? 1 : 0.5}} onClick={ () => this.redirectFunction('3')}>Settings</Button>
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Button Mobile */}
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 3) ? 1 : 0.5}} onClick={ () => this.redirectFunction('3')}>Settings</Button>
+                    </Hidden>
+                </Grid>
+
+                <Grid item xs={(this.state.current_page === 4) ? 4 : 2}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Button PC */}
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 4) ? 1 : 0.5}} onClick={ () => this.redirectFunction('4')}>Logout</Button>
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Button Mobile */}
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)", opacity: (this.state.current_page === 4) ? 1 : 0.5}} onClick={ () => this.redirectFunction('4')}>Logout</Button>
                     </Hidden>
                 </Grid>
             </Grid>

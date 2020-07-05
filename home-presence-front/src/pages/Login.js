@@ -128,7 +128,14 @@ class Login extends React.Component {
 
             {/* Title margin */}
             <Grid container item xs={12}>
-                <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} > </Button>
+                <Hidden only={['xs', 'sm']}>
+                    {/* Button PC */}
+                    <Button size='small' disableRipple={true} fullWidth style={{cursor: 'initial', fontSize: '1.3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-primary-color)", backgroundColor: "var(--main-primary-color)", opacity: 0.5}}>.</Button>
+                </Hidden>
+                <Hidden only={['md', 'lg', 'xl']}>
+                    {/* Button Mobile */}
+                    <Button size='small' disableRipple={true} fullWidth style={{cursor: 'initial', fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-primary-color)", backgroundColor: "var(--main-primary-color)", opacity: 0.5}}>.</Button>
+                </Hidden>
             </Grid>
 
             {/* Login part */}

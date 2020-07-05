@@ -2,6 +2,9 @@
     --main-bg-color: #FFFFFF;
     --main-primary-color: #0B6623;
     --main-error-color: #DC143C;
+    --gold-color: #ff9100;
+    --silver-color: #a39c9c;
+    --bronze-color: #eb691edc;
 }
 
 @font-face {
@@ -102,4 +105,21 @@ body {
 
 .MuiInput-underline:after {
     border-color: var(--main-primary-color) !important;
+}
+
+/* List rank colors */
+.GoldColorText {
+    color: var(--gold-color) !important;
+}
+
+.SilverColorText {
+    color: var(--silver-color) !important;
+}
+
+.BronzeColorText {
+    color: var(--bronze-color) !important;
+}
+
+.NoMedalColorText {
+    color: var(--main-bg-color) !important;
 }

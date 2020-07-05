@@ -290,7 +290,7 @@ class MacDevice extends React.Component {
             <Title_HP/>
 
             {/* Menu */}
-            <Menu_HP current_page={2}/>
+            <Menu_HP current_page={3}/>
 
             {/* Settings part */}
             <Grid container item xs={12} style={{marginBottom: '3%'}}>

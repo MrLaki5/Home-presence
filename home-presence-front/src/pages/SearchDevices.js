@@ -177,13 +177,13 @@ class SearchDevices extends React.Component {
                                     <TableRow>
                                         <Hidden only={['xs', 'sm']}>
                                             {/* Button PC */}
-                                            <TableCell style={{fontSize: "1vw"}}>MAC address</TableCell>
-                                            <TableCell align="right" style={{fontSize: "1vw"}}>User</TableCell>
+                                            <TableCell style={{fontSize: "1vw"}} align="center">MAC address</TableCell>
+                                            <TableCell style={{fontSize: "1vw"}} align="center">User</TableCell>
                                         </Hidden>
                                         <Hidden only={['md', 'lg', 'xl']}>
                                             {/* Button Mobile */}
-                                            <TableCell style={{fontSize: "3vw"}}>MAC address</TableCell>
-                                            <TableCell align="right" style={{fontSize: "3vw"}}>User</TableCell>
+                                            <TableCell style={{fontSize: "3vw"}} align="center">MAC address</TableCell>
+                                            <TableCell style={{fontSize: "3vw"}} align="center">User</TableCell>
                                         </Hidden>
                                     </TableRow>
                                 </TableHead>
@@ -192,19 +192,19 @@ class SearchDevices extends React.Component {
                                     <TableRow key={index} onClick={() => this.goDevice(mac.name, mac.mac)} style={{cursor: "pointer"}}>
                                         <Hidden only={['xs', 'sm']}>
                                             {/* Button PC */}
-                                            <TableCell style={{fontSize: "1vw"}} component="th" scope="row">
+                                            <TableCell style={{fontSize: "1vw"}} component="th" scope="row" align="center">
                                                 {mac.mac}
                                             </TableCell>
-                                            <TableCell style={{fontSize: "1vw"}} align="right">
+                                            <TableCell style={{fontSize: "1vw"}} component="th" scope="row" align="center">
                                                 {mac.name}
                                             </TableCell>
                                         </Hidden>
                                         <Hidden only={['md', 'lg', 'xl']}>
                                             {/* Button Mobile */}
-                                            <TableCell style={{fontSize: "3vw"}} component="th" scope="row">
+                                            <TableCell style={{fontSize: "3vw"}} component="th" scope="row" align="center">
                                                 {mac.mac}
                                             </TableCell>
-                                            <TableCell style={{fontSize: "3vw"}} align="right">
+                                            <TableCell style={{fontSize: "3vw"}} component="th" scope="row" align="center">
                                                 {mac.name}
                                             </TableCell>
                                         </Hidden>

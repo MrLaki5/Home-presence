@@ -505,7 +505,6 @@ def get_users(resp):
 # Method for getting users ordered by number of active hours
 @app.route('/top_by_hours', methods=['OPTIONS'])
 def top_by_hours_options():
-    print("DEBUG test1234")
     response = jsonify({'Allow': 'GET'})
     response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Headers", "*")
