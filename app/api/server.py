@@ -505,6 +505,7 @@ def get_users(resp):
 # Method for getting users ordered by number of active hours
 @app.route('/top_by_hours', methods=['OPTIONS'])
 def top_by_hours_options():
+    print("DEBUG test1234")
     response = jsonify({'Allow': 'GET'})
     response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Headers", "*")
@@ -513,7 +514,8 @@ def top_by_hours_options():
 
 
 @app.route('/top_by_hours', methods=['GET'])
-def top_by_hours():
+@authentication
+def top_by_hours(resp):
     # Get parameters
     time_group = request.args.get('time_group')
     time_groups = ["day", "month", "year", "all"]
@@ -553,15 +555,22 @@ def top_by_hours():
                                 users_rank.c.name, 
                                 users_rank.c.cnt, 
                                 users_rank.c.rnk).paginate(page_num, per_page, False).items
+    # Get count of all
+    count = db.session.query(users_rank.c.mac_address, 
+                             users_rank.c.name, 
+                             users_rank.c.cnt, 
+                             users_rank.c.rnk).count()
     
     for user_db in users_db:
         return_users.append({"mac": user_db[0], "name": user_db[1], "count": user_db[2], "rank": user_db[3]})
     return_message = {
         "status": "success",
-        "users": return_users
+        "users": return_users,
+        "all_user_count": count
     }
 
     response = jsonify(return_message)
+    response.headers.add("Access-Control-Allow-Origin", "*")
     return response, 200
 
 

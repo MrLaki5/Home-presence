@@ -6,6 +6,7 @@ import MacDevice from '../pages/MacDevice'
 import Settings from '../pages/Settings'
 import Login from '../pages/Login'
 import Search from '../pages/SearchDevices'
+import TopLists from '../pages/TopLists'
 
 const my_router = (<Router>
                         <Switch>
@@ -15,6 +16,7 @@ const my_router = (<Router>
                             <Route exact path="/settings" component={Settings} />
                             <Route exact path="/search" component={Search} />
                             <Route exact path="/login" component={Login} />
+                            <Route exact path="/top_lists" component={TopLists} />
                         </Switch>
                     </Router>
                     )
