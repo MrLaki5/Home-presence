@@ -4,6 +4,15 @@
 <br/>
 
 
+### Quick start:
+
+* [Build and run Home-presence](#build)
+* From browser go to Raspberry Pi's ip address
+* Login, default password is: "toor"
+* Under settings set network attribute to match with used network
+* Under settings press start workers to start collecting data 
+
+
 ### Build:
 #### Commands run on host os to build and compose project to Raspberry Pi. For this step all [dependencies](#dependencies) need to be installed and [docker-macine setup](#docker-machine-host-setup).
 
