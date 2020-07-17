@@ -8,6 +8,7 @@ import datetime
 import logging
 import utils.workers_manager as workers_manager
 from utils.token_manager import encode_auth_token
+from utils.email_client import send_email
 from sqlalchemy import func, desc, literal
 from authentication import authentication
 import utils.password_manager as password_manager
@@ -189,8 +190,14 @@ def settings_manager_options():
 @authentication
 def settings_manager(resp):
     response = {}
+    app_user = AppUser.query.first()
     if request.method == 'GET':
         workers_settings = workers_manager.get_settings()
+        if app_user:
+            workers_settings["email_smtp_server"] = app_user["email_smtp_server"]
+            workers_settings["email_port"] = app_user["email_port"]
+            workers_settings["email_sender"] = app_user["email_sender"]
+            workers_settings["email_receiver"] = app_user["email_receiver"]
         response["status"] = "success"
         response["message"] = "Settings aquired"
         response["settings"] = workers_settings
@@ -199,6 +206,17 @@ def settings_manager(resp):
         return response, 200
     else:
         data = request.get_json()
+        if app_user:
+            if "email_smtp_server" in data:
+                app_user["email_smtp_server"] = data["email_smtp_server"]
+            if "email_port" in data:
+                app_user["email_port"] = data["email_port"]
+            if "email_sender" in data:
+                app_user["email_sender"] = data["email_sender"]
+            if "email_receiver" in data:
+                app_user["email_receiver"] = data["email_receiver"]
+            if "email_sender_password" in data:
+                app_user["email_sender_password"] = data["email_sender_password"]
         workers_settings = workers_manager.set_settings(data)
         response["status"] = "success"
         response["message"] = "Settings changed"
@@ -661,6 +679,33 @@ def change_password(resp):
     response = jsonify(return_message)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response, 400
+
+
+# Method for testing email credentials
+@app.route('/send_test_email', methods=['OPTIONS'])
+def get_users_options():
+    response = jsonify({'Allow': 'GET'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
+    return response, 200
+
+
+@app.route('/send_test_email', methods=['GET'])
+@authentication
+def get_users(resp):
+    status, message = send_email("Home-presence status report", "This is test email.")
+    if status:
+        status = "success"
+    else:
+        status = "fail"
+    return_message = {
+        "status": status,
+        "message": message
+    }
+    response = jsonify(return_message)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response, 200
 
 
 # Create flask app and set it up to listen on specific ip and specific port

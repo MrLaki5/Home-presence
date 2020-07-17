@@ -22,6 +22,11 @@ class AppUser(db.Model):
     uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     password = db.Column(db.String(127), default="", nullable=False)
     auth_time = db.Column(DateTime, default=function_now)
+    email_smtp_server = db.Column(db.String(127), default="", nullable=False)
+    email_port = db.Column(db.Integer, default=587, nullable=False)
+    email_sender = db.Column(db.String(127), default="", nullable=False)
+    email_sender_password = db.Column(db.String(127), default="", nullable=False)
+    email_receiver = db.Column(db.String(127), default="", nullable=False)
 
     def __init__(self, password, auth_time=function_now()):
         self.password = password
