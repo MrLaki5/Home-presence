@@ -26,7 +26,13 @@ class MacDevice extends React.Component {
             old_password: "",
             new_password: "",
             password_change_status: "",
-            settings_change_status: ""
+            settings_change_status: "",
+            email_smtp_server: "",
+            email_port: 0,
+            email_sender: "",
+            email_sender_password: "",
+            email_receiver: "",
+            test_email_status: ""
         };
         this.checkWorkerStatus = this.checkWorkerStatus.bind(this)
         this.sendWorkerChange = this.sendWorkerChange.bind(this)
@@ -39,6 +45,12 @@ class MacDevice extends React.Component {
         this.passwordChange = this.passwordChange.bind(this)
         this.handlePasswordNewChange = this.handlePasswordNewChange.bind(this)
         this.handlePasswordOldChange = this.handlePasswordOldChange.bind(this)
+        this.handleSMTPServerChange = this.handleSMTPServerChange.bind(this)
+        this.handleMailPortChange = this.handleMailPortChange.bind(this)
+        this.handleSenderEmailChange = this.handleSenderEmailChange.bind(this)
+        this.handleReceiverEmailChange = this.handleReceiverEmailChange.bind(this)
+        this.handleEmailSenderPasswordChange = this.handleEmailSenderPasswordChange.bind(this)
+        this.sendTestEmail = this.sendTestEmail.bind(this)
     }
 
     componentDidMount() {
@@ -99,7 +111,11 @@ class MacDevice extends React.Component {
                         sleep_time_db: data_obj["sleep_time_db"],
                         network_mask: data_obj["network_mask"],
                         sleep_time_mac: data_obj["sleep_time_mac"],
-                        max_miss_count: data_obj["max_miss_count"]
+                        max_miss_count: data_obj["max_miss_count"],
+                        email_smtp_server: data_obj["email_smtp_server"],
+                        email_port: data_obj["email_port"],
+                        email_sender: data_obj["email_sender"],
+                        email_receiver: data_obj["email_receiver"]
                     }));
                  }
             }
@@ -135,6 +151,11 @@ class MacDevice extends React.Component {
                         network_mask: data_obj_set["network_mask"],
                         sleep_time_mac: data_obj_set["sleep_time_mac"],
                         max_miss_count: data_obj_set["max_miss_count"],
+                        email_smtp_server: data_obj["email_smtp_server"],
+                        email_port: data_obj["email_port"],
+                        email_sender: data_obj["email_sender"],
+                        email_receiver: data_obj["email_receiver"],
+                        email_sender_password: "",
                         settings_change_status: data_obj["message"]
                     }));
                  }
@@ -151,7 +172,15 @@ class MacDevice extends React.Component {
             "sleep_time_db": this.state.sleep_time_db,
             "network_mask": this.state.network_mask,
             "sleep_time_mac": this.state.sleep_time_mac,
-            "max_miss_count": this.state.max_miss_count
+            "max_miss_count": this.state.max_miss_count,
+            "email_smtp_server": this.state.email_smtp_server,
+            "email_port": this.state.email_port,
+            "email_sender": this.state.email_sender,
+            "email_receiver": this.state.email_receiver
+        }
+
+        if (this.state.email_sender_password !== ""){
+            json_data["email_sender_password"] = this.state.email_sender_password
         }
 
         // open the request with the verb and the url
@@ -236,6 +265,28 @@ class MacDevice extends React.Component {
         xhr.send(formData)
     }
 
+    sendTestEmail(event) {
+        // create a new XMLHttpRequest
+        var xhr = new XMLHttpRequest()
+
+        // get a callback when the server responds
+        xhr.addEventListener('load', () => {
+            // update the state of the component with the result here
+            console.log(xhr.responseText)
+            var data_obj = JSON.parse(xhr.responseText);
+            this.setState(state => ({
+                test_email_status: data_obj["message"]
+            }));
+        })
+
+        // open the request with the verb and the url
+        xhr.open('GET', 'http://' + process.env.REACT_APP_SERVER_ADDRESS + ':' + process.env.REACT_APP_SERVER_PORT + '/send_test_email')
+        // add auth token
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('Token'))
+        // send the request
+        xhr.send()
+    }
+
     handleNetworkMaskChange(event) {
         const value = event.target.value || ""
         this.setState(state => ({
@@ -278,6 +329,41 @@ class MacDevice extends React.Component {
         }));
     }
 
+    handleSMTPServerChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            email_smtp_server: value
+        }));
+    }
+
+    handleMailPortChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            email_port: Number(value)
+        }));
+    }
+
+    handleSenderEmailChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            email_sender: value
+        }));
+    }
+
+    handleReceiverEmailChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            email_receiver: value
+        }));
+    }
+
+    handleEmailSenderPasswordChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            email_sender_password: value
+        }));
+    }
+
     render() {
         if (this.state.login_required) {
             return <Redirect to={{
@@ -294,6 +380,46 @@ class MacDevice extends React.Component {
 
             {/* Settings part */}
             <Grid container item xs={12} style={{marginBottom: '3%'}}>
+                {/* Workers status slider */}
+                <Grid container item xs={12} style={{marginBottom: '3%'}}>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                    <Grid item xs={12} md={4}>
+                        <Hidden only={['xs', 'sm']}>
+                            {/* Button PC */}
+                            <FormControlLabel
+                                style={{color: 'var(--main-primary-color)', fontSize: '1.5vw'}}
+                                control={
+                                    <Switch
+                                        style={{color: 'var(--main-primary-color)'}}
+                                        checked={this.state.worker_status}
+                                        onChange={this.sendWorkerChange}
+                                        value="checkedB"
+                                        color="secondary"
+                                    />
+                                }
+                                label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
+                            />
+                        </Hidden>
+                        <Hidden only={['md', 'lg', 'xl']}>
+                            {/* Button Mobile */}
+                            <FormControlLabel
+                                style={{color: 'var(--main-primary-color)', fontSize: '3vw'}}
+                                control={
+                                    <Switch
+                                        style={{color: 'var(--main-primary-color)'}}
+                                        checked={this.state.worker_status}
+                                        onChange={this.sendWorkerChange}
+                                        value="checkedB"
+                                        color="secondary"
+                                    />
+                                }
+                                label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
+                            />
+                        </Hidden>
+                    </Grid>
+                    <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                </Grid>
+
                 {/* Network mask */}
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 <Grid item xs={12} md={4}>
@@ -373,6 +499,105 @@ class MacDevice extends React.Component {
                 </Grid>
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
 
+                {/* SMTP mail server */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="SMTP mail server"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="SMTP mail server"
+                        fullWidth
+                        margin="normal"
+                        onChange={this.handleSMTPServerChange}
+                        value={this.state.email_smtp_server}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* Mail server port */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="Mail server port"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="Mail server port"
+                        fullWidth
+                        type="number"
+                        margin="normal"
+                        onChange={this.handleMailPortChange}
+                        value={this.state.email_port}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* Sender email */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="Sender email"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="Sender email"
+                        fullWidth
+                        margin="normal"
+                        type="email"
+                        onChange={this.handleSenderEmailChange}
+                        value={this.state.email_sender}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* Sender email password */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="Sender email password"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="Sender email password (won't be shown after save)"
+                        fullWidth
+                        type="password"
+                        margin="normal"
+                        onChange={this.handleEmailSenderPasswordChange}
+                        value={this.state.email_sender_password}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* Receiver email */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="Receiver email"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="Receiver email"
+                        fullWidth
+                        margin="normal"
+                        type="email"
+                        onChange={this.handleReceiverEmailChange}
+                        value={this.state.email_receiver}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
                 {/* Save button */}
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 <Grid item xs={12} md={4}>
@@ -404,50 +629,42 @@ class MacDevice extends React.Component {
                     </Hidden>
                 </Grid>
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
-            </Grid>
 
-            {/* Workers status slider */}
-            <Grid container item xs={12} >
+                {/* Try email button */}
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} style={{marginTop: '0.5%'}}>
                     <Hidden only={['xs', 'sm']}>
                         {/* Button PC */}
-                        <FormControlLabel
-                            style={{color: 'var(--main-primary-color)', fontSize: '1.5vw'}}
-                            control={
-                                <Switch
-                                    style={{color: 'var(--main-primary-color)'}}
-                                    checked={this.state.worker_status}
-                                    onChange={this.sendWorkerChange}
-                                    value="checkedB"
-                                    color="secondary"
-                                />
-                            }
-                            label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
-                        />
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '1vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} onClick={ () => this.sendTestEmail()}>Test email</Button>
                     </Hidden>
                     <Hidden only={['md', 'lg', 'xl']}>
                         {/* Button Mobile */}
-                        <FormControlLabel
-                            style={{color: 'var(--main-primary-color)', fontSize: '3vw'}}
-                            control={
-                                <Switch
-                                    style={{color: 'var(--main-primary-color)'}}
-                                    checked={this.state.worker_status}
-                                    onChange={this.sendWorkerChange}
-                                    value="checkedB"
-                                    color="secondary"
-                                />
-                            }
-                            label={ "Active mode: " + ((this.state.worker_status)? "ON": "OFF")}
-                        />
+                        <Button size='small' disableRipple={true} fullWidth style={{fontSize: '3vw', fontFamily: 'Collegia', borderRadius: '0%', color: "var(--main-bg-color)", backgroundColor: "var(--main-primary-color)"}} onClick={ () => this.sendTestEmail()}>Test email</Button>
+                    </Hidden>
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/*Try email status messages */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Message PC */}
+                        <div className='TitleVersion' style={{color: "var(--main-primary-color)"}}>
+                            {this.state.test_email_status}
+                        </div>
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Message Mobile */}
+                        <div className='TitleVersionMobile' style={{color: "var(--main-primary-color)"}}>
+                            {this.state.test_email_status}
+                        </div>
                     </Hidden>
                 </Grid>
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
             </Grid>
 
             {/* Password change part */}
-            <Grid container item xs={12} style={{marginTop: '3%'}}>
+            <Grid container item xs={12}>
                 {/* Old password */}
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
                 <Grid item xs={12} md={4}>
