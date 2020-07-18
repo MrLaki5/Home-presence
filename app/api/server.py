@@ -683,7 +683,7 @@ def change_password(resp):
 
 # Method for testing email credentials
 @app.route('/send_test_email', methods=['OPTIONS'])
-def get_users_options():
+def send_test_email_options():
     response = jsonify({'Allow': 'GET'})
     response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Headers", "*")
@@ -693,7 +693,7 @@ def get_users_options():
 
 @app.route('/send_test_email', methods=['GET'])
 @authentication
-def get_users(resp):
+def send_test_email(resp):
     status, message = send_email("Home-presence status report", "This is test email.")
     if status:
         status = "success"
