@@ -217,6 +217,7 @@ def settings_manager(resp):
                 app_user["email_receiver"] = data["email_receiver"]
             if "email_sender_password" in data:
                 app_user["email_sender_password"] = data["email_sender_password"]
+            db.session.commit()
         workers_settings = workers_manager.set_settings(data)
         response["status"] = "success"
         response["message"] = "Settings changed"
