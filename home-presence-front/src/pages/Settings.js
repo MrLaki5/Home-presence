@@ -32,7 +32,8 @@ class MacDevice extends React.Component {
             email_sender: "",
             email_sender_password: "",
             email_receiver: "",
-            test_email_status: ""
+            test_email_status: "",
+            notification_new_devices: false
         };
         this.checkWorkerStatus = this.checkWorkerStatus.bind(this)
         this.sendWorkerChange = this.sendWorkerChange.bind(this)
@@ -51,6 +52,7 @@ class MacDevice extends React.Component {
         this.handleReceiverEmailChange = this.handleReceiverEmailChange.bind(this)
         this.handleEmailSenderPasswordChange = this.handleEmailSenderPasswordChange.bind(this)
         this.sendTestEmail = this.sendTestEmail.bind(this)
+        this.handleNotificationNewDevicesChange = this.handleNotificationNewDevicesChange.bind(this)
     }
 
     componentDidMount() {
@@ -115,7 +117,8 @@ class MacDevice extends React.Component {
                         email_smtp_server: data_obj["email_smtp_server"],
                         email_port: data_obj["email_port"],
                         email_sender: data_obj["email_sender"],
-                        email_receiver: data_obj["email_receiver"]
+                        email_receiver: data_obj["email_receiver"],
+                        notification_new_devices: data_obj["notification_new_devices"]
                     }));
                  }
             }
@@ -176,7 +179,8 @@ class MacDevice extends React.Component {
             "email_smtp_server": this.state.email_smtp_server,
             "email_port": this.state.email_port,
             "email_sender": this.state.email_sender,
-            "email_receiver": this.state.email_receiver
+            "email_receiver": this.state.email_receiver,
+            "notification_new_devices": this.state.notification_new_devices
         }
 
         if (this.state.email_sender_password !== ""){
@@ -361,6 +365,12 @@ class MacDevice extends React.Component {
         const value = event.target.value || ""
         this.setState(state => ({
             email_sender_password: value
+        }));
+    }
+
+    handleNotificationNewDevicesChange(event) {
+        this.setState(state => ({
+            notification_new_devices: !this.state.notification_new_devices
         }));
     }
 
@@ -595,6 +605,44 @@ class MacDevice extends React.Component {
                             shrink: true,
                         }}
                     />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* New devices notification */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <Hidden only={['xs', 'sm']}>
+                        {/* Button PC */}
+                        <FormControlLabel
+                            style={{color: 'var(--main-primary-color)', fontSize: '1.5vw'}}
+                            control={
+                                <Switch
+                                    style={{color: 'var(--main-primary-color)'}}
+                                    checked={this.state.notification_new_devices}
+                                    onChange={this.handleNotificationNewDevicesChange}
+                                    value="checkedB"
+                                    color="secondary"
+                                />
+                            }
+                            label={ "New devices notification: " + ((this.state.notification_new_devices)? "ON": "OFF")}
+                        />
+                    </Hidden>
+                    <Hidden only={['md', 'lg', 'xl']}>
+                        {/* Button Mobile */}
+                        <FormControlLabel
+                            style={{color: 'var(--main-primary-color)', fontSize: '3vw'}}
+                            control={
+                                <Switch
+                                    style={{color: 'var(--main-primary-color)'}}
+                                    checked={this.state.notification_new_devices}
+                                    onChange={this.handleNotificationNewDevicesChange}
+                                    value="checkedB"
+                                    color="secondary"
+                                />
+                            }
+                            label={ "New devices notification: " + ((this.state.notification_new_devices)? "ON": "OFF")}
+                        />
+                    </Hidden>
                 </Grid>
                 <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
 
