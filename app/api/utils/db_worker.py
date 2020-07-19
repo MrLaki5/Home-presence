@@ -117,7 +117,7 @@ class DBWorker(threading.Thread):
                     db.session.add(log_user)
                     db.session.commit()
 
-                    # Send notification
-                    notify(first_time_devices)
+                # Send notification
+                notify(curr_time, first_time_devices)
         with self.app_context:
             current_app.logger.debug("DB worker stopped!")
