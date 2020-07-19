@@ -3,6 +3,7 @@ import os
 from flask import current_app
 from model import User, db, function_now, LogUser, UpdateTime
 import pytz
+from utils.notification_manager import notify
 
 
 def date_checker(date1, date2):
@@ -76,6 +77,9 @@ class DBWorker(threading.Thread):
                 update_time["last_update"] = curr_time
                 db.session.commit()
 
+                # Save first time devices
+                first_time_devices = []
+
                 current_app.logger.debug("DBWorker: update time: " + str(curr_time))
                 for item in active_set:
                     user_exists = User.query.filter_by(mac_address=str(item["mac"])).first()
@@ -90,6 +94,7 @@ class DBWorker(threading.Thread):
                                            )
                         db.session.add(user_exists)
                         db.session.commit()
+                        first_time_devices.append(item)
                     else:
                         if user_exists["name"] == "" and item["name"] != "":
                             user_exists["name"] = item["name"]
@@ -111,5 +116,8 @@ class DBWorker(threading.Thread):
                     log_user = LogUser(user_uuid=user_exists.uuid, time=curr_time)
                     db.session.add(log_user)
                     db.session.commit()
+
+                    # Send notification
+                    notify(first_time_devices)
         with self.app_context:
             current_app.logger.debug("DB worker stopped!")

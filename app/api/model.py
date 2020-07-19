@@ -27,6 +27,7 @@ class AppUser(db.Model):
     email_sender = db.Column(db.String(127), default="", nullable=False)
     email_sender_password = db.Column(db.String(127), default="", nullable=False)
     email_receiver = db.Column(db.String(127), default="", nullable=False)
+    notification_new_devices = db.Column(db.Boolean, default=False, nullable=False)
 
     def __init__(self, password, auth_time=function_now()):
         self.password = password

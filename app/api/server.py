@@ -198,6 +198,7 @@ def settings_manager(resp):
             workers_settings["email_port"] = app_user["email_port"]
             workers_settings["email_sender"] = app_user["email_sender"]
             workers_settings["email_receiver"] = app_user["email_receiver"]
+            workers_settings["notification_new_devices"] = app_user["notification_new_devices"]
         response["status"] = "success"
         response["message"] = "Settings aquired"
         response["settings"] = workers_settings
@@ -217,8 +218,16 @@ def settings_manager(resp):
                 app_user["email_receiver"] = data["email_receiver"]
             if "email_sender_password" in data:
                 app_user["email_sender_password"] = data["email_sender_password"]
+            if "notification_new_devices" in data:
+                app_user["notification_new_devices"] = data["notification_new_devices"]
             db.session.commit()
         workers_settings = workers_manager.set_settings(data)
+        if app_user:
+            workers_settings["email_smtp_server"] = app_user["email_smtp_server"]
+            workers_settings["email_port"] = app_user["email_port"]
+            workers_settings["email_sender"] = app_user["email_sender"]
+            workers_settings["email_receiver"] = app_user["email_receiver"]
+            workers_settings["notification_new_devices"] = app_user["notification_new_devices"]
         response["status"] = "success"
         response["message"] = "Settings changed"
         response["settings"] = workers_settings
