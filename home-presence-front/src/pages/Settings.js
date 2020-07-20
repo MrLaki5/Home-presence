@@ -33,7 +33,9 @@ class MacDevice extends React.Component {
             email_sender_password: "",
             email_receiver: "",
             test_email_status: "",
-            notification_new_devices: false
+            notification_new_devices: false,
+            sleep_time_cleanup: "",
+            cleanup_time_cleanup: ""
         };
         this.checkWorkerStatus = this.checkWorkerStatus.bind(this)
         this.sendWorkerChange = this.sendWorkerChange.bind(this)
@@ -53,6 +55,8 @@ class MacDevice extends React.Component {
         this.handleEmailSenderPasswordChange = this.handleEmailSenderPasswordChange.bind(this)
         this.sendTestEmail = this.sendTestEmail.bind(this)
         this.handleNotificationNewDevicesChange = this.handleNotificationNewDevicesChange.bind(this)
+        this.handleSleepTimeCleanupChange = this.handleSleepTimeCleanupChange.bind(this)
+        this.handleCleanupTimeCleanupChange = this.handleCleanupTimeCleanupChange.bind(this)
     }
 
     componentDidMount() {
@@ -118,7 +122,9 @@ class MacDevice extends React.Component {
                         email_port: data_obj["email_port"],
                         email_sender: data_obj["email_sender"],
                         email_receiver: data_obj["email_receiver"],
-                        notification_new_devices: data_obj["notification_new_devices"]
+                        notification_new_devices: data_obj["notification_new_devices"],
+                        sleep_time_cleanup: data_obj["sleep_time_cleanup"],
+                        cleanup_time_cleanup: data_obj["cleanup_time_cleanup"]
                     }));
                  }
             }
@@ -159,7 +165,9 @@ class MacDevice extends React.Component {
                         email_sender: data_obj["email_sender"],
                         email_receiver: data_obj["email_receiver"],
                         email_sender_password: "",
-                        settings_change_status: data_obj["message"]
+                        settings_change_status: data_obj["message"],
+                        sleep_time_cleanup: data_obj["sleep_time_cleanup"],
+                        cleanup_time_cleanup: data_obj["cleanup_time_cleanup"]
                     }));
                  }
             }
@@ -180,7 +188,9 @@ class MacDevice extends React.Component {
             "email_port": this.state.email_port,
             "email_sender": this.state.email_sender,
             "email_receiver": this.state.email_receiver,
-            "notification_new_devices": this.state.notification_new_devices
+            "notification_new_devices": this.state.notification_new_devices,
+            "sleep_time_cleanup": this.state.sleep_time_cleanup,
+            "cleanup_time_cleanup": this.state.cleanup_time_cleanup
         }
 
         if (this.state.email_sender_password !== ""){
@@ -374,6 +384,20 @@ class MacDevice extends React.Component {
         }));
     }
 
+    handleSleepTimeCleanupChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            sleep_time_cleanup: Number(value)
+        }));
+    }
+
+    handleCleanupTimeCleanupChange(event) {
+        const value = event.target.value || ""
+        this.setState(state => ({
+            cleanup_time_cleanup: Number(value)
+        }));
+    }
+
     render() {
         if (this.state.login_required) {
             return <Redirect to={{
@@ -502,6 +526,46 @@ class MacDevice extends React.Component {
                         type="number"
                         onChange={this.handleSleepTimeDBChange}
                         value={this.state.sleep_time_db}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* Cleanup worker sleep time */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="Cleanup worker sleep time (s)"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="Cleanup worker sleep time (s)"
+                        fullWidth
+                        margin="normal"
+                        type="number"
+                        onChange={this.handleSleepTimeCleanupChange}
+                        value={this.state.sleep_time_cleanup}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+
+                {/* Cleanup worker cleanup time */}
+                <Grid item only={['md', 'lg', 'xl']} md={4}></Grid>
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        id="standard-full-width"
+                        label="Cleanup worker time before cleanup (days)"
+                        style={{color: "var(--main-primary-color)" }}
+                        placeholder="Cleanup worker time before cleanup (days)"
+                        fullWidth
+                        margin="normal"
+                        type="number"
+                        onChange={this.handleCleanupTimeCleanupChange}
+                        value={this.state.cleanup_time_cleanup}
                         InputLabelProps={{
                             shrink: true,
                         }}
