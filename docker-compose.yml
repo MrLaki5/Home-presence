@@ -25,6 +25,8 @@ services:
      - MAX_MISS_COUNTER=5
      - WORKER_MAC_SLEEP_TIME_S=150
      - WORKER_DB_SLEEP_TIME_S=600
+     - WORKER_CLEANUP_SLEEP_TIME_S=86400
+     - WORKER_CLEANUP_TIME_D=90
      - TIMEZONE=Europe/Belgrade
      - SECRET_KEY=Random_secret_key123
     ports:
