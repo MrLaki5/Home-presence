@@ -309,23 +309,23 @@ class MacDevice extends React.Component {
     }
 
     handleMissCounterChange(event) {
-        const value = event.target.value || ""
+        const value = event.target.value || 1
         this.setState(state => ({
-            max_miss_count: Number(value)
+            max_miss_count: (Number(value) <= 0)? 1: Number(value)
         }));
     }
 
     handleSleepTimeMacChange(event) {
-        const value = event.target.value || ""
+        const value = event.target.value || 1
         this.setState(state => ({
-            sleep_time_mac: Number(value)
+            sleep_time_mac: (Number(value) <= 0)? 1: Number(value)
         }));
     }
 
     handleSleepTimeDBChange(event) {
-        const value = event.target.value || ""
+        const value = event.target.value || 1
         this.setState(state => ({
-            sleep_time_db: Number(value)
+            sleep_time_db: (Number(value) <= 0)? 1: Number(value)
         }));
     }
 
@@ -351,7 +351,7 @@ class MacDevice extends React.Component {
     }
 
     handleMailPortChange(event) {
-        const value = event.target.value || ""
+        const value = event.target.value || 1
         this.setState(state => ({
             email_port: Number(value)
         }));
@@ -385,16 +385,16 @@ class MacDevice extends React.Component {
     }
 
     handleSleepTimeCleanupChange(event) {
-        const value = event.target.value || ""
+        const value = event.target.value || 1
         this.setState(state => ({
-            sleep_time_cleanup: Number(value)
+            sleep_time_cleanup: (Number(value) <= 0)? 1: Number(value)
         }));
     }
 
     handleCleanupTimeCleanupChange(event) {
-        const value = event.target.value || ""
+        const value = event.target.value || 1
         this.setState(state => ({
-            cleanup_time_cleanup: Number(value)
+            cleanup_time_cleanup: (Number(value) <= 0)? 1: Number(value)
         }));
     }
 
