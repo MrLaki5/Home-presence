@@ -1,8 +1,14 @@
 <img src="img/logo.png" width="200"/>
 
-<b>Network activity diagnostic tool on raspberry pi</b>
+<b>Network devices activity diagnostic tool on raspberry pi</b>
 <br/>
 
+* <b>Track devices activity over time on your local network</b>
+* <b>Be notified, with email, when new device is connected on your local network</b>
+* <b>Have overview of active times of every device on your local network</b>
+* <b>Have overview of top lists of devices with most active hours on your local network per: day, month, year, all time</b>
+ 
+<hr/>
 
 ### Quick start:
 
@@ -12,6 +18,7 @@
 * Under settings set network attribute to match with used network
 * Under settings press start workers to start collecting data 
 
+<hr/>
 
 ### Build:
 #### Commands run on host os to build and compose project to Raspberry Pi. For this step all [dependencies](#dependencies) need to be installed and [docker-macine setup](#docker-machine-host-setup).
@@ -37,6 +44,7 @@ eval "$(docker-machine env <Machine name>)"
 # For more help run: ./build.sh --help
 ```
 
+<hr/>
 
 ### Dependencies:
  * [Raspberry Pi with docker setup](https://github.com/MrLaki5/How-to-101/blob/master/raspberry_101.MD#docker-instalation) (Raspberry PI) 
@@ -45,6 +53,7 @@ eval "$(docker-machine env <Machine name>)"
  * [Docker Compose](https://docs.docker.com/compose/install/) (Host)
  * [Docker Machine](https://docs.docker.com/machine/install-machine/) (Host)
 
+<hr/>
 
 ### Docker-machine host setup:
 #### Commands run on host os to setup docker machine for communication with raspberry.
@@ -69,8 +78,30 @@ docker-machine create --driver generic --generic-ip-address <Raspberry ip addres
 # <Machine name>: Name of docker-machine that will be used to connect to Raspberry.
 ```
 
+<hr/>
+
+### Interface overview:
+
+Interface is composed of multiple pages that are used for collected data representation and system parameterization. Interface pages are shown on images below:
+* #### Graphs of active device numbers per time
+<img src="img/front_page.png" width="100%"/>
+
+* #### List of active device in specific period of time
+<img src="img/second_page.png" width="100%"/>
+
+* #### Specific device information and active times
+<img src="img/third_page.png" width="100%"/>
+
+* #### Top lists of devices with most active times in last [Day, Month, Year, All time]
+<img src="img/toplists_page.png" width="100%"/>
+
+* #### Settings with system parameterization, options to set update times of network analysis, setup email for new devices notifications, change system password
+<img src="img/settings_page.png" width="100%"/>
+
+<hr/>
 
 ### Stack:
+
  * Hardware platform: <b>Raspberry Pi</b>
  * Virtualization: <b>Docker containers</b>
  * Backend api for network statistics: <b>Flask</b>
