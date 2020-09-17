@@ -1,6 +1,6 @@
 <img src="img/logo.png" width="200"/>
 
-<b>Network devices activity diagnostic tool on raspberry pi</b>
+<b>Local network devices presence and activity diagnostic Dockerized system for Raspberry Pi</b>
 <br/>
 
 * <b>Track devices activity over time on your local network</b>
