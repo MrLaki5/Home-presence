@@ -47,7 +47,7 @@ eval "$(docker-machine env <Machine name>)"
 <hr/>
 
 ### Dependencies:
- * [Raspberry Pi with docker setup](https://github.com/MrLaki5/How-to-101/blob/master/raspberry_101.MD#docker-instalation) (Raspberry PI) 
+ * [Raspberry Pi with docker setup](https://github.com/MrLaki5/How-to-101/blob/master/how-tos/raspberry_101.MD#docker-instalation) (Raspberry PI) 
  * [NPM](https://www.npmjs.com/) (Host)
  * [Docker](https://www.docker.com/) (Host)
  * [Docker Compose](https://docs.docker.com/compose/install/) (Host)
